@@ -47,3 +47,20 @@ async def preload_qwen_models(
                 await _ensure_model(client, base_url, model)
 
     await asyncio.gather(*(worker(m) for m in targets))
+
+
+async def check_ollama_ready(
+    base_url: str = "http://localhost:11434",
+    transport: httpx.AsyncBaseTransport | None = None,
+    timeout: float = 5.0,
+) -> bool:
+    """Return True if Ollama responds to /api/tags within timeout.
+
+    Any non-2xx or exception is considered not ready.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=timeout, transport=transport) as client:
+            resp = await client.get(f"{base_url}/api/tags")
+            return 200 <= resp.status_code < 300
+    except Exception:
+        return False

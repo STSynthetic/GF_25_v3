@@ -3,7 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
+from app import models
 from app.config import apply_ollama_optimizations
+from app.logging_config import init_logging
 from app.metrics import metrics_endpoint, metrics_middleware
 from app.models import preload_qwen_models
 
@@ -17,6 +19,9 @@ class HealthStatus(BaseModel):
 
 
 def create_app() -> FastAPI:
+    # Initialize logging first
+    init_logging()
+
     # [CORE-STD][OLLAMA-OPT] Apply Ollama env optimizations at startup
     apply_ollama_optimizations()
 
@@ -43,6 +48,17 @@ def create_app() -> FastAPI:
     @app.get("/metrics", include_in_schema=False)
     async def metrics():
         return await metrics_endpoint()
+
+    # Liveness probe
+    @app.get("/live", tags=["health"], include_in_schema=False)
+    async def live() -> dict[str, str]:
+        return {"status": "ok"}
+
+    # Readiness probe: checks Ollama availability quickly
+    @app.get("/ready", tags=["health"], include_in_schema=False)
+    async def ready() -> dict[str, str]:
+        is_ready = await models.check_ollama_ready()
+        return {"ready": "true" if is_ready else "false"}
 
     return app
 
