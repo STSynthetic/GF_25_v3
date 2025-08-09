@@ -98,7 +98,7 @@
               "2.2"
             ],
             "details": "Implement ConfigurationLoader class with methods to: load individual YAML files with error handling for file not found, parsing errors, and schema validation; validate loaded configurations against the defined schema using JSON Schema or similar validation library; cache loaded configurations in memory for performance; provide getter methods for accessing specific analysis configurations; implement configuration validation including checking for required fields, data type validation, range validation for numeric parameters, and prompt placeholder validation. Include comprehensive logging for configuration loading events and validation failures.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Test loading of all 21 YAML files, validate error handling for malformed YAML files, test schema validation with invalid configurations, verify caching functionality and performance, test configuration access methods"
           },
           {
@@ -109,7 +109,7 @@
               "2.3"
             ],
             "details": "Implement file system watcher using appropriate library (watchdog for Python, fsnotify for Go, etc.) to monitor the configuration directory for file changes. Create HotReloadManager class that: watches for file modification events on all 21 YAML files; implements debouncing to handle multiple rapid file changes; performs atomic configuration updates using thread-safe mechanisms; validates new configurations before applying changes; maintains rollback capability in case of invalid configurations; provides callback mechanisms for components that need to respond to configuration changes; implements graceful handling of file system events including file deletion, creation, and modification. Include comprehensive logging for reload events and failures.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Test file change detection for all YAML files, verify debouncing prevents excessive reloads, test thread-safe configuration updates under concurrent access, validate rollback functionality with invalid configurations, test callback notification system"
           },
           {
@@ -684,7 +684,7 @@
     ],
     "metadata": {
       "created": "2025-08-09T12:21:40.059Z",
-      "updated": "2025-08-09T19:26:12.023Z",
+      "updated": "2025-08-09T19:49:01.853Z",
       "description": "Tasks for master context"
     }
   }
