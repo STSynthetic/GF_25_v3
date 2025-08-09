@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from app.config import apply_ollama_optimizations
+from app.metrics import metrics_endpoint, metrics_middleware
 from app.models import preload_qwen_models
 
 
@@ -27,6 +28,9 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title="GF-25 v3 Service", version="0.1.0", lifespan=lifespan)
 
+    # Metrics middleware
+    app.middleware("http")(metrics_middleware)
+
     @app.get("/", tags=["root"])  # simple root for smoke-tests
     async def root() -> dict[str, str]:
         return {"message": "GF-25 v3 is running"}
@@ -34,6 +38,11 @@ def create_app() -> FastAPI:
     @app.get("/health", response_model=HealthStatus, tags=["health"])  # health endpoint
     async def health() -> HealthStatus:
         return HealthStatus(status="ok", service="gf-25-v3", version=app.version)
+
+    # Expose Prometheus metrics
+    @app.get("/metrics", include_in_schema=False)
+    async def metrics():
+        return await metrics_endpoint()
 
     return app
 
