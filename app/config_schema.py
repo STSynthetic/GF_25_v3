@@ -39,6 +39,13 @@ class ModelConfiguration(BaseModel):
     top_p: float = Field(ge=0.0, le=1.0, description="Top-p nucleus sampling")
     top_k: int = Field(ge=0, description="Top-k sampling cutoff")
     num_ctx: int = Field(ge=128, description="Context window size (tokens)")
+    # Support task spec "max_tokens" while aligning with PRD's num_predict
+    num_predict: int | None = Field(
+        default=None,
+        ge=0,
+        description="Maximum tokens to generate (alias: max_tokens)",
+        alias="max_tokens",
+    )
 
 
 class VisionOptimization(BaseModel):
@@ -54,6 +61,23 @@ class VisionOptimization(BaseModel):
 
 class ParallelProcessing(BaseModel):
     max_concurrency: int = Field(ge=1, le=64, description="Max concurrent analyses")
+    worker_count: int | None = Field(
+        default=None,
+        ge=1,
+        le=128,
+        description="Number of workers to allocate (optional)",
+    )
+    batch_size: int | None = Field(
+        default=None,
+        ge=1,
+        le=1024,
+        description="Batch size for grouped processing (optional)",
+    )
+    timeout_seconds: int | None = Field(
+        default=None,
+        ge=1,
+        description="Timeout per work item in seconds (optional)",
+    )
 
 
 class Prompts(BaseModel):
@@ -63,6 +87,18 @@ class Prompts(BaseModel):
 
 class ValidationConstraints(BaseModel):
     rules: list[str] = Field(default_factory=list, description="Validation rules to enforce")
+    output_format: str | None = Field(
+        default=None,
+        description="Expected output format (e.g., json, yaml)",
+    )
+    required_fields: list[str] | None = Field(
+        default=None,
+        description="List of required fields expected in the model output",
+    )
+    data_types: dict[str, str] | None = Field(
+        default=None,
+        description="Mapping of output fields to expected data types",
+    )
 
 
 class PerformanceTargets(BaseModel):
@@ -76,6 +112,28 @@ class PerformanceTargets(BaseModel):
         description="Target success rate for corrective processing (e.g., 0.95 for 95%)",
         default=0.95,
     )
+    max_latency_ms: int | None = Field(
+        default=None,
+        ge=1,
+        description="Maximum acceptable end-to-end latency in milliseconds",
+    )
+    min_accuracy: float | None = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Minimum acceptable accuracy threshold (0.0-1.0)",
+    )
+    throughput_goals: list[str] | None = Field(
+        default=None,
+        description="List of descriptive throughput goals",
+    )
+
+
+class Metadata(BaseModel):
+    name: str = Field(description="Human-friendly configuration name")
+    version: str = Field(min_length=1, description="Configuration version")
+    description: str = Field(description="Configuration description")
+    analysis_type: "AnalysisType" = Field(description="One of 21 supported analysis types")
 
 
 class AnalysisConfig(BaseModel):
@@ -102,6 +160,11 @@ class AnalysisConfig(BaseModel):
         ],
         description="QA stages to run in order",
     )
+    # Optional metadata block for future alignment; kept optional for backward compatibility
+    metadata: Metadata | None = Field(
+        default=None,
+        description="Optional metadata block mirroring top-level fields",
+    )
 
     @field_validator("qa_stages")
     @classmethod
@@ -109,3 +172,18 @@ class AnalysisConfig(BaseModel):
         if len(v) != len(set(v)):
             raise ValueError("qa_stages must be unique")
         return v
+
+    @field_validator("metadata")
+    @classmethod
+    def validate_metadata_consistency(cls, meta: Metadata | None, values):  # type: ignore[override]
+        # If metadata is provided, ensure consistency with top-level fields when present
+        if meta is None:
+            return meta
+        # best-effort consistency checks; do not raise if top-level missing
+        top_analysis_type = values.get("analysis_type")
+        top_version = values.get("version")
+        if top_analysis_type and meta.analysis_type != top_analysis_type:
+            raise ValueError("metadata.analysis_type must match analysis_type")
+        if top_version and meta.version != top_version:
+            raise ValueError("metadata.version must match version")
+        return meta
