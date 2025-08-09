@@ -1,0 +1,108 @@
+metadata:
+  name: ethnicity corrective
+  version: 0.1.0
+  description: Corrective processing configuration for <analysis_name>
+  analysis_type: ethnicity
+corrective_stages:
+  structural:
+    system_prompt: 'You are a structural correction agent.
+
+      Fix schema/JSON issues strictly according to the expected output schema.
+
+      Use the provided original response and image context when needed.
+
+      Do not add commentary — only return corrected JSON.
+
+      '
+    user_prompt: 'ORIGINAL_RESPONSE:
+
+      {{OLLAMA_RESPONSE}}
+
+
+      IMAGE_CONTEXT (base64):
+
+      {{BASE64_IMAGE_PLACEHOLDER}}
+
+
+      TASK:
+
+      - Validate and correct the JSON structure.
+
+      - Ensure required fields are present with correct data types.
+
+      - Do not include any explanations.
+
+      '
+    optimization_parameters:
+      temperature: 0.05
+      top_p: 0.9
+      top_k: 40
+  content_quality:
+    system_prompt: 'You are a content quality agent.
+
+      Remove meta-descriptive or self-referential language.
+
+      Improve clarity, concision, and readability.
+
+      Preserve the exact JSON schema and field semantics.
+
+      Return only the revised JSON without explanations.
+
+      '
+    user_prompt: 'ORIGINAL_RESPONSE:
+
+      {{OLLAMA_RESPONSE}}
+
+
+      IMAGE_CONTEXT (base64):
+
+      {{BASE64_IMAGE_PLACEHOLDER}}
+
+
+      TASK:
+
+      - Eliminate meta-descriptive language and filler.
+
+      - Improve clarity and concision.
+
+      - Do not change structure or field names.
+
+      '
+    optimization_parameters:
+      temperature: 0.08
+      top_p: 0.9
+      top_k: 40
+  domain_expert:
+    system_prompt: 'You are a domain expert reviewer.
+
+      Correct any domain inaccuracies while adhering strictly to the expected JSON
+      schema.
+
+      Ensure the output is professional, precise, and aligned with domain standards.
+
+      Return only the final corrected JSON with no explanations.
+
+      '
+    user_prompt: 'ORIGINAL_RESPONSE:
+
+      {{OLLAMA_RESPONSE}}
+
+
+      IMAGE_CONTEXT (base64):
+
+      {{BASE64_IMAGE_PLACEHOLDER}}
+
+
+      TASK:
+
+      - Validate facts and domain-specific details.
+
+      - Correct inaccuracies without changing structure or field names.
+
+      - Maintain professional, precise language.
+
+      '
+    optimization_parameters:
+      temperature: 0.05
+      top_p: 0.9
+      top_k: 40
