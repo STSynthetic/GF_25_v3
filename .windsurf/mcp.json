@@ -14,6 +14,20 @@
 				"AZURE_OPENAI_API_KEY": "YOUR_AZURE_KEY_HERE",
 				"OLLAMA_API_KEY": "YOUR_OLLAMA_API_KEY_HERE"
 			}
+		},
+		"Github": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@smithery/cli@latest",
+				"run",
+				"@smithery-ai/github",
+				"--config",
+				"{\"githubPersonalAccessToken\":\"${GITHUB_PAT}\"}"
+			],
+			"env": {
+				"GITHUB_PAT": "${GITHUB_PAT}"
+			}
 		}
 	}
 }
