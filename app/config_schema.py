@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 
 class AnalysisType(str, Enum):
@@ -175,13 +175,14 @@ class AnalysisConfig(BaseModel):
 
     @field_validator("metadata")
     @classmethod
-    def validate_metadata_consistency(cls, meta: Metadata | None, values):  # type: ignore[override]
+    def validate_metadata_consistency(cls, meta: Metadata | None, info: ValidationInfo):  # type: ignore[override]
         # If metadata is provided, ensure consistency with top-level fields when present
         if meta is None:
             return meta
-        # best-effort consistency checks; do not raise if top-level missing
-        top_analysis_type = values.get("analysis_type")
-        top_version = values.get("version")
+        # Access already-validated fields via info.data (Pydantic v2)
+        data = info.data or {}
+        top_analysis_type = data.get("analysis_type")
+        top_version = data.get("version")
         if top_analysis_type and meta.analysis_type != top_analysis_type:
             raise ValueError("metadata.analysis_type must match analysis_type")
         if top_version and meta.version != top_version:

@@ -76,7 +76,7 @@
             "description": "Create the standardized YAML configuration schema that will be used across all 21 analysis types, defining the complete structure including metadata, model configuration, vision optimization, parallel processing settings, prompts, validation constraints, and performance targets.",
             "dependencies": [],
             "details": "Design and document the YAML schema structure with sections for: metadata (name, version, description, analysis_type), model_configuration (temperature, top_p, top_k, num_ctx, max_tokens), vision_optimization (image_preprocessing, resolution_settings), parallel_processing (worker_count, batch_size, timeout), prompts (system_prompt with placeholders, user_prompt), validation_constraints (output_format, required_fields, data_types), and performance_targets (max_latency, min_accuracy, throughput_goals). Create a template YAML file that serves as the base for all 21 analysis types.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Validate YAML schema against YAML specification, test schema parsing with various YAML parsers, verify all required fields are present and properly typed"
           },
           {
@@ -87,7 +87,7 @@
               "2.1"
             ],
             "details": "Using the established schema from subtask 2.1, create individual YAML files for each analysis type: ages_analysis.yaml, themes_analysis.yaml, emotions_analysis.yaml, objects_analysis.yaml, activities_analysis.yaml, settings_analysis.yaml, styles_analysis.yaml, colors_analysis.yaml, lighting_analysis.yaml, composition_analysis.yaml, technical_analysis.yaml, cultural_analysis.yaml, historical_analysis.yaml, artistic_analysis.yaml, narrative_analysis.yaml, symbolic_analysis.yaml, aesthetic_analysis.yaml, contextual_analysis.yaml, interpretive_analysis.yaml, comparative_analysis.yaml, and comprehensive_analysis.yaml. Each file should contain analysis-specific system and user prompts extracted from master_prompts.json, appropriate model parameters for the analysis complexity, and validation constraints specific to expected output format.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Verify all 21 YAML files parse correctly, validate each file contains all required schema fields, test prompt extraction accuracy from master_prompts.json, confirm unique analysis-specific parameters are properly set"
           },
           {
@@ -684,7 +684,7 @@
     ],
     "metadata": {
       "created": "2025-08-09T12:21:40.059Z",
-      "updated": "2025-08-09T16:30:12.201Z",
+      "updated": "2025-08-09T18:44:43.852Z",
       "description": "Tasks for master context"
     }
   }
