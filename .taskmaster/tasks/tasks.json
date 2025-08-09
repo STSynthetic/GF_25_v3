@@ -68,7 +68,7 @@
         "dependencies": [
           1
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -135,7 +135,7 @@
         "dependencies": [
           2
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -143,7 +143,7 @@
             "description": "Design and implement the foundational YAML template structure that will be used across all 21 corrective processing configurations, establishing the corrective_stages framework with structural, content_quality, and domain_expert sections",
             "dependencies": [],
             "details": "Create a base template YAML file defining the corrective_stages structure with three main sections: structural (for JSON/schema fixes), content_quality (for meta-descriptive language removal), and domain_expert (for professional accuracy enhancement). Each stage should include system_prompt with {{BASE64_IMAGE_PLACEHOLDER}} and {{OLLAMA_RESPONSE}} placeholders, user_prompt field for specific correction instructions, and optimization_parameters section for correction consistency. Include metadata fields for version control and configuration validation.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Validate YAML template parses correctly, verify all required sections are present, test placeholder format consistency, and confirm template can be used as base for all 21 configurations"
           },
           {
@@ -154,7 +154,7 @@
               "3.1"
             ],
             "details": "Create structural correction prompts for each of the 21 analysis types (ages, themes, etc.) that handle JSON schema validation, format corrections, and structural integrity issues. System prompts should incorporate {{BASE64_IMAGE_PLACEHOLDER}} for image context and {{OLLAMA_RESPONSE}} for the original response that needs correction. User prompts should provide specific instructions for fixing structural issues like malformed JSON, missing required fields, incorrect data types, and schema violations. Include optimization parameters for consistency in structural corrections.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Test structural prompts with malformed JSON inputs, verify schema validation corrections work properly, confirm placeholder replacement functions correctly, and validate consistency across all 21 analysis types"
           },
           {
@@ -165,7 +165,7 @@
               "3.1"
             ],
             "details": "Create content quality correction prompts that focus on removing meta-descriptive language, improving clarity, and enhancing readability while maintaining technical accuracy. System prompts should use {{BASE64_IMAGE_PLACEHOLDER}} and {{OLLAMA_RESPONSE}} placeholders effectively. User prompts should provide specific instructions for eliminating phrases like 'I can see', 'It appears', 'The image shows', and other meta-commentary while preserving factual content. Include optimization parameters for consistent content quality improvements across all analysis types.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Test content quality corrections with responses containing meta-descriptive language, verify removal of unnecessary commentary, confirm factual content preservation, and validate consistency across different analysis types"
           },
           {
@@ -684,7 +684,7 @@
     ],
     "metadata": {
       "created": "2025-08-09T12:21:40.059Z",
-      "updated": "2025-08-09T20:07:58.581Z",
+      "updated": "2025-08-09T20:30:01.348Z",
       "description": "Tasks for master context"
     }
   }
