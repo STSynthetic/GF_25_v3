@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
+from app.config import apply_ollama_optimizations
+
 
 class HealthStatus(BaseModel):
     """Service health status response."""
@@ -11,6 +13,9 @@ class HealthStatus(BaseModel):
 
 
 def create_app() -> FastAPI:
+    # [CORE-STD][OLLAMA-OPT] Apply Ollama env optimizations at startup
+    apply_ollama_optimizations()
+
     app = FastAPI(title="GF-25 v3 Service", version="0.1.0")
 
     @app.get("/", tags=["root"])  # simple root for smoke-tests
