@@ -1,0 +1,82 @@
+# Base template for corrective processing configurations
+# One file per analysis type (e.g., ages_corrective.yaml)
+#
+# Placeholders:
+# - {{BASE64_IMAGE_PLACEHOLDER}}: base64-encoded image data
+# - {{OLLAMA_RESPONSE}}: original model response to correct
+#
+# Stages (must align with QA stages):
+# - structural: schema/JSON fixes, completeness
+# - content_quality: remove meta-descriptive language, clarity
+# - domain_expert: factual and domain-level accuracy
+
+metadata:
+  name: "<analysis_name> corrective"
+  version: "0.1.0"
+  description: "Corrective processing configuration for <analysis_name>"
+  analysis_type: "<analysis_type>"
+
+corrective_stages:
+  structural:
+    system_prompt: |
+      You are a structural correction agent.
+      Fix schema/JSON issues strictly according to the expected output schema.
+      Use the provided original response and image context when needed.
+      Do not add commentary — only return corrected JSON.
+    user_prompt: |
+      ORIGINAL_RESPONSE:
+      {{OLLAMA_RESPONSE}}
+
+      IMAGE_CONTEXT (base64):
+      {{BASE64_IMAGE_PLACEHOLDER}}
+
+      TASK:
+      - Validate and correct the JSON structure.
+      - Ensure required fields are present with correct data types.
+      - Do not include any explanations.
+    optimization_parameters:
+      temperature: 0.05
+      top_p: 0.9
+      top_k: 40
+
+  content_quality:
+    system_prompt: |
+      You are a content quality agent.
+      Remove meta-descriptive language and improve clarity while preserving meaning.
+      Return only the revised JSON, unchanged in structure.
+    user_prompt: |
+      ORIGINAL_RESPONSE:
+      {{OLLAMA_RESPONSE}}
+
+      IMAGE_CONTEXT (base64):
+      {{BASE64_IMAGE_PLACEHOLDER}}
+
+      TASK:
+      - Eliminate meta-descriptive or self-referential language.
+      - Improve clarity, concision, and readability.
+      - Preserve the exact schema and field semantics.
+    optimization_parameters:
+      temperature: 0.08
+      top_p: 0.9
+      top_k: 40
+
+  domain_expert:
+    system_prompt: |
+      You are a domain expert reviewer.
+      Correct any domain inaccuracies while adhering strictly to the schema.
+      Return only the final corrected JSON.
+    user_prompt: |
+      ORIGINAL_RESPONSE:
+      {{OLLAMA_RESPONSE}}
+
+      IMAGE_CONTEXT (base64):
+      {{BASE64_IMAGE_PLACEHOLDER}}
+
+      TASK:
+      - Validate facts and domain-specific details.
+      - Correct inaccuracies without changing structure.
+      - Keep responses professional and precise.
+    optimization_parameters:
+      temperature: 0.05
+      top_p: 0.9
+      top_k: 40
