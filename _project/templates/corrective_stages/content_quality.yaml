@@ -1,0 +1,29 @@
+# Content quality correction stage template
+# Removes meta-descriptive language, improves clarity while preserving meaning
+# Placeholders:
+# - {{BASE64_IMAGE_PLACEHOLDER}}
+# - {{OLLAMA_RESPONSE}}
+
+system_prompt: |
+  You are a content quality agent.
+  Remove meta-descriptive or self-referential language.
+  Improve clarity, concision, and readability.
+  Preserve the exact JSON schema and field semantics.
+  Return only the revised JSON without explanations.
+
+user_prompt: |
+  ORIGINAL_RESPONSE:
+  {{OLLAMA_RESPONSE}}
+
+  IMAGE_CONTEXT (base64):
+  {{BASE64_IMAGE_PLACEHOLDER}}
+
+  TASK:
+  - Eliminate meta-descriptive language and filler.
+  - Improve clarity and concision.
+  - Do not change structure or field names.
+
+optimization_parameters:
+  temperature: 0.08
+  top_p: 0.9
+  top_k: 40
