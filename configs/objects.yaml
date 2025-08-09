@@ -1,0 +1,29 @@
+analysis_type: objects
+version: "1.0.0"
+model_configuration:
+  model: qwen2.5vl:32b
+  temperature: 0.1
+  top_p: 0.9
+  top_k: 40
+  num_ctx: 32768
+vision_optimization:
+  max_edge_pixels: 1344
+  preserve_aspect_ratio: true
+parallel_processing:
+  max_concurrency: 8
+prompts:
+  system_prompt: |
+    # system prompt for objects analysis (externalized)
+  user_prompt: |
+    # user prompt template for objects analysis (externalized)
+validation_constraints:
+  rules:
+    - no meta-descriptive language
+    - json output only
+performance_targets:
+  throughput_target: "800+ per worker acceptable"
+  success_rate_target: 0.95
+qa_stages:
+  - structural
+  - content_quality
+  - domain_expert
