@@ -1,0 +1,1 @@
+Run all tests with verbose logging. Analyze the logs to identify all failures and errors. Systematically fix each issue, starting with those that have the greatest impact on the codebase. Re-run tests after each fix and repeat until all tests pass or no further progress can be made.

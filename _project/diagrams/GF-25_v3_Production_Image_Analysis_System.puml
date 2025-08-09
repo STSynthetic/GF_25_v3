@@ -1,0 +1,321 @@
+@startuml GF-25_v3_Production_Image_Analysis_System
+
+!define RECTANGLE class
+' theme removed for compatibility
+
+title GF-25 v3 Production Image Analysis System\nEnhanced Multi-Agent Architecture with Parallel Processing
+
+' External Systems
+package "External Systems" as external {
+  [GoFlow Job Queue] as goflow
+  [File Storage System] as storage
+  [Monitoring Dashboard] as monitor
+  [Discord Webhooks] as discord
+}
+
+' Main Application Container
+package "GF-25 v3 Application Container" as app_container {
+  
+  ' Configuration Management Layer
+  package "YAML Configuration System" as config_system {
+    [Configuration Manager] as config_mgr
+    [Hot-Reload Engine] as hot_reload
+    
+    package "Configuration Files" as config_files {
+      [application.yaml] as app_config
+      [api_endpoints.yaml] as api_config
+      [llm_servers.yaml] as llm_config
+      [ai_models.yaml] as model_config
+      [storage.yaml] as storage_config
+      [21 Analysis Configs] as analysis_configs
+      [21 Corrective Configs] as corrective_configs
+      [ollama_optimization.yaml] as ollama_config
+      [parallel_processing.yaml] as parallel_config
+    }
+  }
+
+  ' Ingestion & Scaffolding Layer
+  package "Ingestion & Scaffolding" as ingest_layer {
+    [Job API Client] as job_api
+    [Project Scaffold Manager] as scaffold_mgr
+    [Manifest Builder] as manifest_builder
+    [Image Downloader] as image_downloader
+    [Analysis Folder Scaffolder] as folder_scaffolder
+  }
+
+  
+  ' Core Application Layer
+  package "Core Application Layer" as core_layer {
+    [FastAPI Application] as fastapi
+    [Job Orchestrator] as orchestrator
+    [State Management System] as state_mgr
+    [Path Management System] as path_mgr
+    [Type-Safe Enums] as enums
+    
+    package "Queue Management" as queue_mgmt {
+      [Redis Client] as redis_client
+      [Specialized Queues (21)] as redis_queues
+    }
+  }
+  
+  ' Ollama Optimization Layer
+  package "Ollama Optimization Layer" as ollama_layer {
+    [Pre-Job Optimizer] as pre_optimizer
+    [Environment Manager] as env_mgr
+    [Model Preloader] as model_preloader
+    [Performance Validator] as perf_validator
+    
+    note right of pre_optimizer
+      **Optimal Settings for 8-Thread, 16-GPU Processing:**
+      - OLLAMA_FLASH_ATTENTION=1
+      - OLLAMA_KV_CACHE_TYPE=q8_0
+      - OLLAMA_NUM_PARALLEL=8
+      - OLLAMA_SCHED_SPREAD=true
+      - OLLAMA_GPU_OVERHEAD=0
+      - OLLAMA_MAX_LOADED_MODELS=2
+      - OLLAMA_MAX_VRAM=22GB
+      - OLLAMA_NUM_GPU=1
+    end note
+  }
+  
+  ' Parallel Processing Engine
+  package "Parallel Processing Engine" as parallel_engine {
+    [Thread Coordinator] as thread_coord
+    [GPU Resource Manager] as gpu_mgr
+    [Load Balancer] as load_balancer
+    [Memory Optimizer] as memory_opt
+    
+    package "Processing Threads" as threads {
+      [Analysis Thread 1] as thread1
+      [Analysis Thread 2] as thread2
+      [Analysis Thread 3] as thread3
+      [Analysis Thread 4] as thread4
+      [Analysis Thread 5] as thread5
+      [Analysis Thread 6] as thread6
+      [Analysis Thread 7] as thread7
+      [Analysis Thread 8] as thread8
+    }
+  }
+  
+  ' AI Processing Layer
+  package "AI Processing Layer" as ai_layer {
+    [LiteLLM Interface] as litellm
+    
+    package "Local LLM Servers" as llm_servers {
+      [Ollama Server] as ollama
+      
+      package "Loaded Models" as models {
+        [qwen2.5vl:32b\n(Analysis Model)] as qwen_analysis
+        [qwen2.5vl:latest\n(QA Model)] as qwen_qa
+      }
+    }
+  }
+  
+  ' Analysis Workflow Engine
+  package "21-Stage Analysis Workflow" as analysis_workflow {
+    [Analysis Stage Controller] as analysis_controller
+    [Component Factory] as component_factory
+    [Dynamic Component Registry] as component_registry
+    
+    package "Analysis Components" as analysis_components {
+      [Ages Analysis] as ages
+      [Themes Analysis] as themes
+      [Actions Analysis] as actions
+      [Objects Analysis] as objects
+      [Emotions Analysis] as emotions
+      [Settings Analysis] as settings
+      [... 15 More Components] as more_components
+    }
+  }
+  
+  ' OpenAI Agent SDK QA System
+  package "OpenAI Agent SDK QA System" as qa_system {
+    [QA Orchestrator] as qa_orchestrator
+    [Agent Coordinator] as agent_coord
+    [Context Manager] as context_mgr
+    [Agent Factory] as agent_factory
+    
+    package "QA Agents" as qa_agents {
+      [Structural Validation Agent] as structural_agent
+      [Content Quality Agent] as content_agent
+      [Domain Expert Agent] as domain_agent
+    }
+    
+    package "Corrective Processing" as corrective_system {
+      [Corrective Prompt Generator] as corrective_gen
+      [Progressive Enhancement Engine] as enhancement_engine
+      [Failure Pattern Analyzer] as failure_analyzer
+    }
+  }
+  
+  ' Data Processing Layer
+  package "Data Processing Layer" as data_layer {
+    [Image Processor] as image_proc
+    [Result Aggregator] as result_agg
+    [JSON Validator] as json_validator
+    [Output Formatter] as output_formatter
+    [Project Workspace] as project_ws
+  }
+  
+  ' Monitoring and Observability
+  package "Monitoring & Observability" as monitoring {
+    [Performance Metrics] as metrics
+    [Resource Monitor] as resource_mon
+    [Quality Analytics] as quality_analytics
+    [Alert Manager] as alerts
+    [Metrics Endpoint (/metrics)] as metrics_ep
+    [Health Endpoint (/health)] as health_ep
+    [Discord Notifier] as discord_notifier
+  }
+}
+
+' External Dependencies
+package "Hardware Resources" as hardware {
+  [16 GPU Cores] as gpu_cores
+  [CPU with 8+ Threads] as cpu_threads
+  [22GB+ VRAM] as vram
+  [High-Speed Storage] as fast_storage
+}
+
+' Datastores
+package "Datastores" as datastores {
+  [PostgreSQL Database] as postgres
+}
+
+' Relationships - External Flow
+goflow --> orchestrator : "Job Requests\n(Image + Manifest)"
+orchestrator --> storage : "Image Retrieval"
+monitor <-- metrics : "Performance Data"
+monitor <-- alerts : "System Alerts"
+discord <-- discord_notifier : "Operational Notifications"
+
+' Relationships - Configuration System
+config_mgr --> hot_reload : "File Change Detection"
+hot_reload --> config_files : "Monitor Changes"
+config_mgr --> core_layer : "Runtime Config"
+config_mgr --> ai_layer : "Model Config"
+config_mgr --> qa_system : "QA Config"
+
+' Relationships - Core Flow
+orchestrator --> pre_optimizer : "Job Initialization"
+pre_optimizer --> env_mgr : "Environment Setup"
+env_mgr --> model_preloader : "Model Loading"
+model_preloader --> perf_validator : "Validation"
+perf_validator --> thread_coord : "Ready Signal"
+
+' Relationships - Parallel Processing
+thread_coord --> load_balancer : "Work Distribution"
+load_balancer --> threads : "Task Assignment"
+gpu_mgr --> threads : "GPU Resource Allocation"
+memory_opt --> threads : "Memory Management"
+
+' Relationships - AI Processing
+threads --> analysis_controller : "Analysis Requests"
+analysis_controller --> component_factory : "Component Creation"
+component_factory --> analysis_components : "Dynamic Instantiation"
+analysis_components --> litellm : "LLM Requests"
+litellm --> ollama : "Model Inference"
+ollama --> models : "Processing"
+
+' Relationships - QA System
+analysis_components --> qa_orchestrator : "Analysis Results"
+qa_orchestrator --> agent_coord : "Validation Coordination"
+agent_coord --> agent_factory : "Select Corrective Profile"
+agent_factory --> qa_agents : "Instantiate Template Agent"
+qa_agents --> corrective_system : "Failed Validations"
+corrective_system --> litellm : "Corrective Requests"
+enhancement_engine --> failure_analyzer : "Pattern Learning"
+
+' Relationships - Data Processing
+qa_orchestrator --> result_agg : "Validated Results"
+result_agg --> json_validator : "Final Validation"
+json_validator --> output_formatter : "Format Output"
+output_formatter --> storage : "Store Results"
+state_mgr --> postgres : "State & Audit Logs"
+result_agg --> postgres : "Task and QA Records"
+
+' Relationships - Monitoring
+threads --> metrics : "Performance Data"
+qa_agents --> quality_analytics : "Quality Metrics"
+gpu_mgr --> resource_mon : "Resource Usage"
+resource_mon --> alerts : "Threshold Monitoring"
+fastapi --> metrics_ep : "Expose Metrics"
+fastapi --> health_ep : "Health Checks"
+alerts --> discord_notifier : "Critical Events"
+
+' Relationships - Hardware
+gpu_cores --> gpu_mgr : "GPU Resources"
+cpu_threads --> thread_coord : "CPU Resources"
+vram --> memory_opt : "Memory Resources"
+fast_storage --> storage : "Storage I/O"
+
+' Flow Annotations
+note top of orchestrator
+  **Job Processing Flow:**
+  1. Request next job via Job API Client
+  2. Create project workspace and scaffold folders
+  3. Build manifest.json and resolve paths
+  4. Download images into project workspace
+  5. Initialize Ollama optimization
+  6. Distribute across up to 8 analysis threads
+  7. Process through 21 analysis stages
+  8. Validate through 3-tier QA (agent factory with YAML profiles)
+  9. Apply corrective processing if needed
+  10. Persist state/audit to PostgreSQL and enqueue tasks via Redis
+  11. Submit results and generate reports
+end note
+
+note right of agent_coord
+  **3-Tier QA Validation:**
+  - Tier 1: Structural validation (JSON schema)
+  - Tier 2: Content quality (meta-language detection)
+  - Tier 3: Domain expert validation
+  
+  **Corrective Processing:**
+  - Agent Factory loads one of 21 YAML corrective profiles per failure
+  - Stage-specific prompts
+  - Progressive enhancement
+  - Context preservation
+  - Pattern learning
+end note
+
+note bottom of load_balancer
+  **Parallel Processing Targets:**
+  - 8 concurrent analysis threads
+  - Single GPU leveraging 16 compute cores
+  - 800+ analyses/hour per worker
+  - Dynamic load balancing
+  - Optimal resource allocation
+end note
+
+note left of qwen_analysis
+  **Model Optimization:**
+  - **qwen2.5vl:32b**: Analysis stages
+    - Temperature: 0.1
+    - Context: ~32768 (sized to include largest prompts + base64 image)
+    - Parallel batch processing
+  
+  - **qwen2.5vl:latest**: QA validation
+    - Temperature: 0.05
+    - Context: ~16384 (sized to include YAML corrective prompts + image)
+    - Fast validation responses
+    - Corrective optimization
+end note
+
+' Styling
+skinparam package {
+  BackgroundColor LightBlue
+  BorderColor Blue
+}
+
+skinparam class {
+  BackgroundColor LightYellow
+  BorderColor Orange
+}
+
+skinparam note {
+  BackgroundColor LightGreen
+  BorderColor Green
+}
+
+@enduml

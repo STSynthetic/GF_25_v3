@@ -1,0 +1,691 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Infrastructure and Ollama Optimization System",
+        "description": "Initialize project structure, implement Ollama optimization environment variables, and establish performance monitoring for 8-thread parallel processing on single GPU with 16 compute cores",
+        "details": "Create project structure with FastAPI application, implement Ollama optimization protocol with environment variables (OLLAMA_FLASH_ATTENTION=1, OLLAMA_KV_CACHE_TYPE=q8_0, OLLAMA_NUM_PARALLEL=8, OLLAMA_SCHED_SPREAD=true, etc.), establish model preloading system for qwen2.5vl:32b and qwen2.5vl:latest, implement performance validation checks, create monitoring endpoints (/metrics, /health), and setup basic logging infrastructure",
+        "testStrategy": "Verify Ollama optimization settings are applied correctly, test model preloading functionality, validate performance metrics collection, confirm 8-thread parallel processing capability, and test monitoring endpoints return proper status",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Initialize Project Structure and FastAPI Application",
+            "description": "Create the foundational project directory structure and initialize a FastAPI application with proper organization for the Ollama optimization system",
+            "dependencies": [],
+            "details": "Create project root directory with subdirectories: /app (main application), /config (YAML configurations), /monitoring (metrics and health), /logs (logging infrastructure), /tests (test files). Initialize FastAPI application in app/main.py with basic routing structure. Create requirements.txt with FastAPI, uvicorn, pydantic, PyYAML, and other essential dependencies. Setup basic project configuration files including .env template, .gitignore, and README.md with project overview.",
+            "status": "pending",
+            "testStrategy": "Verify project structure is created correctly, test FastAPI application starts without errors, confirm all directories are accessible, and validate requirements.txt installs successfully"
+          },
+          {
+            "id": 2,
+            "title": "Implement Ollama Environment Variable Optimization System",
+            "description": "Configure and implement the Ollama optimization environment variables for 8-thread parallel processing and GPU optimization",
+            "dependencies": [],
+            "details": "Create config/ollama_config.py module to manage environment variables: OLLAMA_FLASH_ATTENTION=1, OLLAMA_KV_CACHE_TYPE=q8_0, OLLAMA_NUM_PARALLEL=8, OLLAMA_SCHED_SPREAD=true, OLLAMA_GPU_LAYERS=-1, OLLAMA_THREADS=8. Implement OllamaOptimizer class to validate and apply these settings at application startup. Create environment variable validation logic to ensure proper GPU detection and thread allocation. Implement configuration loader that reads from .env file and applies optimizations before model initialization.",
+            "status": "pending",
+            "testStrategy": "Test environment variables are set correctly, verify GPU detection works properly, validate 8-thread allocation, confirm optimization settings are applied to Ollama instance, and test configuration validation logic"
+          },
+          {
+            "id": 3,
+            "title": "Establish Model Preloading System for Qwen2.5VL Models",
+            "description": "Implement model preloading and management system for qwen2.5vl:32b and qwen2.5vl:latest models with optimization parameters",
+            "dependencies": [],
+            "details": "Create app/models/model_manager.py with ModelPreloader class that handles model initialization and caching. Implement preload_models() function to load both qwen2.5vl:32b and qwen2.5vl:latest models with optimized parameters. Create model health check system to verify models are loaded and responsive. Implement model switching logic for different analysis types. Add model memory management to prevent GPU memory overflow. Create model status tracking with load times and memory usage metrics.",
+            "status": "pending",
+            "testStrategy": "Test both models preload successfully, verify model switching functionality, validate memory usage stays within limits, confirm model health checks work correctly, and test model response times meet performance targets"
+          },
+          {
+            "id": 4,
+            "title": "Create Performance Monitoring and Metrics Collection System",
+            "description": "Implement comprehensive performance monitoring with metrics collection for GPU utilization, thread performance, and model response times",
+            "dependencies": [],
+            "details": "Create monitoring/metrics.py with PerformanceMonitor class to track GPU utilization, thread performance, model response times, and memory usage. Implement metrics collection using prometheus_client for /metrics endpoint. Create performance validation checks that ensure 8-thread parallel processing is functioning optimally. Add GPU core utilization tracking across all 16 compute cores. Implement performance alerting system for degraded performance detection. Create performance history logging for trend analysis.",
+            "status": "pending",
+            "testStrategy": "Verify metrics collection works correctly, test /metrics endpoint returns proper Prometheus format, validate GPU utilization tracking accuracy, confirm thread performance monitoring, and test performance validation checks trigger appropriately"
+          },
+          {
+            "id": 5,
+            "title": "Setup Health Monitoring Endpoints and Logging Infrastructure",
+            "description": "Implement health monitoring endpoints and comprehensive logging system for system status tracking and debugging",
+            "dependencies": [],
+            "details": "Create monitoring/health.py with HealthChecker class that provides /health endpoint with detailed system status including Ollama connection, model availability, GPU status, and thread pool health. Implement structured logging system using Python logging with rotating file handlers in logs/ directory. Create log levels for different components (INFO for general operations, DEBUG for detailed analysis, ERROR for failures). Add request/response logging middleware for API calls. Implement log aggregation for performance analysis and debugging. Create startup health validation that ensures all components are functioning before accepting requests.",
+            "status": "pending",
+            "testStrategy": "Test /health endpoint returns comprehensive status information, verify logging system captures all relevant events, validate log rotation works correctly, confirm health checks detect system issues accurately, and test startup validation prevents unhealthy service startup"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Implement YAML Configuration Architecture for 21 Analysis Types",
+        "description": "Create comprehensive YAML configuration system for all 21 analysis types with hot-reload capabilities, model parameters, and validation constraints",
+        "details": "Based on master_prompts.json reference, create 21 YAML configuration files (ages_analysis.yaml, themes_analysis.yaml, etc.) with structure including metadata, model_configuration (temperature, top_p, top_k, num_ctx, etc.), vision_optimization, parallel_processing settings, prompts (system_prompt, user_prompt), validation_constraints, and performance_targets. Implement hot-reload mechanism for runtime configuration updates without service interruption",
+        "testStrategy": "Validate all 21 YAML files load correctly, test hot-reload functionality, verify configuration parameter application to models, confirm validation constraints work properly, and test configuration versioning",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define YAML Configuration Schema and Structure",
+            "description": "Create the standardized YAML configuration schema that will be used across all 21 analysis types, defining the complete structure including metadata, model configuration, vision optimization, parallel processing settings, prompts, validation constraints, and performance targets.",
+            "dependencies": [],
+            "details": "Design and document the YAML schema structure with sections for: metadata (name, version, description, analysis_type), model_configuration (temperature, top_p, top_k, num_ctx, max_tokens), vision_optimization (image_preprocessing, resolution_settings), parallel_processing (worker_count, batch_size, timeout), prompts (system_prompt with placeholders, user_prompt), validation_constraints (output_format, required_fields, data_types), and performance_targets (max_latency, min_accuracy, throughput_goals). Create a template YAML file that serves as the base for all 21 analysis types.",
+            "status": "pending",
+            "testStrategy": "Validate YAML schema against YAML specification, test schema parsing with various YAML parsers, verify all required fields are present and properly typed"
+          },
+          {
+            "id": 2,
+            "title": "Create 21 Analysis Type YAML Configuration Files",
+            "description": "Generate all 21 YAML configuration files based on the master_prompts.json reference, creating specific configurations for each analysis type including ages_analysis.yaml, themes_analysis.yaml, and 19 others with their unique prompts and parameters.",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "Using the established schema from subtask 2.1, create individual YAML files for each analysis type: ages_analysis.yaml, themes_analysis.yaml, emotions_analysis.yaml, objects_analysis.yaml, activities_analysis.yaml, settings_analysis.yaml, styles_analysis.yaml, colors_analysis.yaml, lighting_analysis.yaml, composition_analysis.yaml, technical_analysis.yaml, cultural_analysis.yaml, historical_analysis.yaml, artistic_analysis.yaml, narrative_analysis.yaml, symbolic_analysis.yaml, aesthetic_analysis.yaml, contextual_analysis.yaml, interpretive_analysis.yaml, comparative_analysis.yaml, and comprehensive_analysis.yaml. Each file should contain analysis-specific system and user prompts extracted from master_prompts.json, appropriate model parameters for the analysis complexity, and validation constraints specific to expected output format.",
+            "status": "pending",
+            "testStrategy": "Verify all 21 YAML files parse correctly, validate each file contains all required schema fields, test prompt extraction accuracy from master_prompts.json, confirm unique analysis-specific parameters are properly set"
+          },
+          {
+            "id": 3,
+            "title": "Implement Configuration Loader and Validation System",
+            "description": "Create a robust configuration loading system that can read, parse, validate, and cache all YAML configuration files with comprehensive error handling and validation against the defined schema.",
+            "dependencies": [
+              "2.2"
+            ],
+            "details": "Implement ConfigurationLoader class with methods to: load individual YAML files with error handling for file not found, parsing errors, and schema validation; validate loaded configurations against the defined schema using JSON Schema or similar validation library; cache loaded configurations in memory for performance; provide getter methods for accessing specific analysis configurations; implement configuration validation including checking for required fields, data type validation, range validation for numeric parameters, and prompt placeholder validation. Include comprehensive logging for configuration loading events and validation failures.",
+            "status": "pending",
+            "testStrategy": "Test loading of all 21 YAML files, validate error handling for malformed YAML files, test schema validation with invalid configurations, verify caching functionality and performance, test configuration access methods"
+          },
+          {
+            "id": 4,
+            "title": "Implement Hot-Reload Mechanism with File Watching",
+            "description": "Create a hot-reload system that monitors YAML configuration files for changes and automatically reloads configurations without service interruption, including file system watching and thread-safe configuration updates.",
+            "dependencies": [
+              "2.3"
+            ],
+            "details": "Implement file system watcher using appropriate library (watchdog for Python, fsnotify for Go, etc.) to monitor the configuration directory for file changes. Create HotReloadManager class that: watches for file modification events on all 21 YAML files; implements debouncing to handle multiple rapid file changes; performs atomic configuration updates using thread-safe mechanisms; validates new configurations before applying changes; maintains rollback capability in case of invalid configurations; provides callback mechanisms for components that need to respond to configuration changes; implements graceful handling of file system events including file deletion, creation, and modification. Include comprehensive logging for reload events and failures.",
+            "status": "pending",
+            "testStrategy": "Test file change detection for all YAML files, verify debouncing prevents excessive reloads, test thread-safe configuration updates under concurrent access, validate rollback functionality with invalid configurations, test callback notification system"
+          },
+          {
+            "id": 5,
+            "title": "Integrate Configuration System with Analysis Pipeline",
+            "description": "Integrate the YAML configuration system with the main analysis pipeline, ensuring configurations are properly applied to model parameters, prompts are correctly formatted with placeholders, and the system can dynamically adapt to configuration changes.",
+            "dependencies": [
+              "2.4"
+            ],
+            "details": "Create integration layer that: connects ConfigurationLoader with analysis pipeline components; implements configuration application to model parameters (temperature, top_p, top_k, num_ctx) for each analysis type; creates prompt formatting system that replaces placeholders like {{BASE64_IMAGE_PLACEHOLDER}} with actual image data; implements configuration-driven validation of analysis outputs based on validation_constraints; creates performance monitoring integration using performance_targets from configurations; implements configuration versioning and tracking for audit purposes; provides configuration override capabilities for testing and debugging. Include comprehensive error handling for configuration application failures and fallback mechanisms.",
+            "status": "pending",
+            "testStrategy": "Test configuration parameter application to models, verify prompt placeholder replacement functionality, validate output validation against configuration constraints, test performance target monitoring, confirm configuration versioning works correctly, test override and fallback mechanisms"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Create Corrective Processing YAML Configurations",
+        "description": "Implement 21 corrective processing YAML configurations with stage-specific prompts for structural, content quality, and domain expert corrections",
+        "details": "Create corrective YAML files (ages_corrective.yaml, themes_corrective.yaml, etc.) with corrective_stages structure including structural (JSON/schema fixes), content_quality (meta-descriptive language removal), and domain_expert (professional accuracy enhancement) sections. Each stage includes system_prompt with {{BASE64_IMAGE_PLACEHOLDER}} and {{OLLAMA_RESPONSE}} placeholders, user_prompt with specific correction instructions, and optimization_parameters for correction consistency",
+        "testStrategy": "Verify all corrective YAML files parse correctly, test placeholder replacement functionality, validate stage-specific prompt loading, confirm optimization parameters are applied, and test corrective prompt selection logic",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Base YAML Template Structure for Corrective Processing",
+            "description": "Design and implement the foundational YAML template structure that will be used across all 21 corrective processing configurations, establishing the corrective_stages framework with structural, content_quality, and domain_expert sections",
+            "dependencies": [],
+            "details": "Create a base template YAML file defining the corrective_stages structure with three main sections: structural (for JSON/schema fixes), content_quality (for meta-descriptive language removal), and domain_expert (for professional accuracy enhancement). Each stage should include system_prompt with {{BASE64_IMAGE_PLACEHOLDER}} and {{OLLAMA_RESPONSE}} placeholders, user_prompt field for specific correction instructions, and optimization_parameters section for correction consistency. Include metadata fields for version control and configuration validation.",
+            "status": "pending",
+            "testStrategy": "Validate YAML template parses correctly, verify all required sections are present, test placeholder format consistency, and confirm template can be used as base for all 21 configurations"
+          },
+          {
+            "id": 2,
+            "title": "Implement Structural Correction Stage Prompts",
+            "description": "Develop comprehensive system and user prompts for the structural correction stage across all 21 analysis types, focusing on JSON schema validation and structural integrity fixes",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Create structural correction prompts for each of the 21 analysis types (ages, themes, etc.) that handle JSON schema validation, format corrections, and structural integrity issues. System prompts should incorporate {{BASE64_IMAGE_PLACEHOLDER}} for image context and {{OLLAMA_RESPONSE}} for the original response that needs correction. User prompts should provide specific instructions for fixing structural issues like malformed JSON, missing required fields, incorrect data types, and schema violations. Include optimization parameters for consistency in structural corrections.",
+            "status": "pending",
+            "testStrategy": "Test structural prompts with malformed JSON inputs, verify schema validation corrections work properly, confirm placeholder replacement functions correctly, and validate consistency across all 21 analysis types"
+          },
+          {
+            "id": 3,
+            "title": "Implement Content Quality Correction Stage Prompts",
+            "description": "Develop content quality correction prompts for removing meta-descriptive language and improving response clarity across all 21 analysis types",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Create content quality correction prompts that focus on removing meta-descriptive language, improving clarity, and enhancing readability while maintaining technical accuracy. System prompts should use {{BASE64_IMAGE_PLACEHOLDER}} and {{OLLAMA_RESPONSE}} placeholders effectively. User prompts should provide specific instructions for eliminating phrases like 'I can see', 'It appears', 'The image shows', and other meta-commentary while preserving factual content. Include optimization parameters for consistent content quality improvements across all analysis types.",
+            "status": "pending",
+            "testStrategy": "Test content quality corrections with responses containing meta-descriptive language, verify removal of unnecessary commentary, confirm factual content preservation, and validate consistency across different analysis types"
+          },
+          {
+            "id": 4,
+            "title": "Implement Domain Expert Correction Stage Prompts",
+            "description": "Develop domain-specific expert correction prompts that enhance professional accuracy and technical precision for each of the 21 analysis types",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Create domain expert correction prompts tailored to each analysis type's specific professional requirements. For example, ages analysis should focus on developmental psychology accuracy, themes analysis on literary/artistic expertise, etc. System prompts should leverage {{BASE64_IMAGE_PLACEHOLDER}} and {{OLLAMA_RESPONSE}} placeholders to provide context-aware corrections. User prompts should include domain-specific terminology, professional standards, and accuracy requirements. Include optimization parameters for maintaining professional-grade output quality and consistency within each domain.",
+            "status": "pending",
+            "testStrategy": "Test domain expert corrections with technically inaccurate responses, verify professional terminology usage, confirm domain-specific accuracy improvements, and validate expert-level output quality across all 21 analysis types"
+          },
+          {
+            "id": 5,
+            "title": "Generate and Validate All 21 Corrective YAML Configuration Files",
+            "description": "Generate all 21 corrective processing YAML files using the established template and stage-specific prompts, then implement comprehensive validation and testing",
+            "dependencies": [
+              "3.2",
+              "3.3",
+              "3.4"
+            ],
+            "details": "Generate all 21 corrective YAML files (ages_corrective.yaml, themes_corrective.yaml, etc.) by combining the base template with stage-specific prompts. Each file should contain complete corrective_stages structure with all three correction stages properly configured. Implement validation logic to ensure all files parse correctly, contain required sections, and maintain consistent structure. Create configuration loading system that can dynamically load corrective configurations based on analysis type. Include error handling for malformed configurations and fallback mechanisms.",
+            "status": "pending",
+            "testStrategy": "Verify all 21 YAML files parse without errors, test configuration loading system with each file, validate placeholder replacement functionality works across all configurations, confirm stage-specific prompt loading operates correctly, test optimization parameter application, and validate corrective prompt selection logic for different analysis types"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Implement Redis Queue Management System",
+        "description": "Setup Redis-based queue management with 21 specialized analysis queues, corrective processing queues, and worker coordination for parallel processing",
+        "details": "Configure Redis connection with connection pooling, implement 21 analysis queues (ages_analysis_queue, themes_analysis_queue, etc.), create corrective queues (structural_correction_queue, content_correction_queue, domain_correction_queue), implement management queues (manual_review_queue, priority_processing_queue, batch_completion_queue), setup worker coordination with 8-worker pool, implement round-robin task distribution, and create queue monitoring with length alerts",
+        "testStrategy": "Test Redis connectivity and connection pooling, verify all queues are created properly, test task distribution across workers, validate queue monitoring and alerting, confirm worker coordination functionality, and test queue persistence and recovery",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Configure Redis Connection and Connection Pooling",
+            "description": "Setup Redis connection infrastructure with connection pooling, configuration management, and connection health monitoring",
+            "dependencies": [],
+            "details": "Install redis-py library, create RedisConnectionManager class with connection pool configuration (max_connections=20, retry_on_timeout=True, socket_keepalive=True), implement connection health checks with ping functionality, setup Redis configuration parameters (host, port, db, password), implement connection retry logic with exponential backoff, and create connection monitoring with connection pool statistics tracking",
+            "status": "pending",
+            "testStrategy": "Test Redis connectivity with various configurations, verify connection pooling limits and behavior, test connection recovery after Redis restart, validate health check functionality, and confirm connection statistics accuracy"
+          },
+          {
+            "id": 2,
+            "title": "Implement 21 Specialized Analysis Queues",
+            "description": "Create all 21 analysis queues with proper naming, configuration, and queue-specific settings based on analysis types",
+            "dependencies": [
+              "4.1"
+            ],
+            "details": "Create QueueManager class to handle queue operations, implement 21 analysis queues (ages_analysis_queue, themes_analysis_queue, characters_analysis_queue, plot_analysis_queue, setting_analysis_queue, conflict_analysis_queue, resolution_analysis_queue, style_analysis_queue, pov_analysis_queue, tone_analysis_queue, themes_analysis_queue, symbolism_analysis_queue, literary_devices_analysis_queue, cultural_context_analysis_queue, historical_context_analysis_queue, social_commentary_analysis_queue, psychological_analysis_queue, philosophical_analysis_queue, educational_value_analysis_queue, entertainment_value_analysis_queue, overall_assessment_analysis_queue), configure queue-specific parameters (priority levels, TTL settings, max_length limits), implement queue creation and validation methods, and setup queue persistence configuration",
+            "status": "pending",
+            "testStrategy": "Verify all 21 queues are created with correct names, test queue-specific configurations are applied, validate queue persistence across Redis restarts, confirm queue length limits work properly, and test queue priority handling"
+          },
+          {
+            "id": 3,
+            "title": "Create Corrective and Management Queues",
+            "description": "Implement corrective processing queues and management queues for workflow coordination and manual intervention",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Create corrective processing queues: structural_correction_queue (for JSON/schema fixes), content_correction_queue (for content quality improvements), domain_correction_queue (for domain expert corrections). Implement management queues: manual_review_queue (for human review tasks), priority_processing_queue (for high-priority items), batch_completion_queue (for batch finalization). Configure queue-specific settings including retry policies, dead letter queues, message TTL, and priority levels. Implement queue routing logic and message formatting standards for each queue type",
+            "status": "pending",
+            "testStrategy": "Test all corrective and management queues are created properly, verify queue routing logic works correctly, validate retry policies and dead letter queue functionality, confirm message formatting standards, and test priority queue behavior"
+          },
+          {
+            "id": 4,
+            "title": "Setup Worker Coordination and Task Distribution",
+            "description": "Implement 8-worker pool coordination system with round-robin task distribution and worker health monitoring",
+            "dependencies": [
+              "4.3"
+            ],
+            "details": "Create WorkerCoordinator class to manage 8-worker pool, implement round-robin task distribution algorithm ensuring even workload distribution across workers, create worker registration and heartbeat system, implement worker health monitoring with automatic failover, setup task assignment tracking and worker status management, create worker pool scaling capabilities, implement task timeout and retry mechanisms, and setup worker performance metrics collection (tasks completed, processing time, error rates)",
+            "status": "pending",
+            "testStrategy": "Test worker pool initialization and registration, verify round-robin distribution works evenly, validate worker health monitoring and failover, confirm task timeout and retry mechanisms, test worker scaling functionality, and validate performance metrics accuracy"
+          },
+          {
+            "id": 5,
+            "title": "Implement Queue Monitoring and Alerting System",
+            "description": "Create comprehensive queue monitoring system with length alerts, performance metrics, and dashboard capabilities",
+            "dependencies": [
+              "4.4"
+            ],
+            "details": "Implement QueueMonitor class with real-time queue length tracking, setup alerting thresholds for queue length warnings (>100 items) and critical alerts (>500 items), create queue performance metrics (throughput, processing time, error rates), implement queue health dashboard with queue status visualization, setup automated alerts via logging and optional webhook notifications, create queue statistics collection (peak usage, average processing time, success/failure rates), implement queue cleanup and maintenance routines, and setup monitoring data persistence for historical analysis",
+            "status": "pending",
+            "testStrategy": "Test queue length monitoring accuracy, verify alerting thresholds trigger correctly, validate performance metrics collection, confirm dashboard displays real-time data, test automated alert notifications, and verify historical data persistence and cleanup routines"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Develop PostgreSQL State Management and Audit System",
+        "description": "Implement comprehensive state tracking with PostgreSQL database schema for process states, task states, QA attempts, and audit logging",
+        "details": "Create database schema with process_states_table (process_id, client_id, project_id, status, task counts, timestamps), task_states_table (task_id, process_id, media_id, analysis_id, status, processing times, qa_attempts, confidence_score), qa_attempts_table (attempt_id, task_id, qa_stage, validation_result, failure_reasons, corrective_prompt_used), and audit_logs_table (log_id, process_id, event_type, event_data, timestamp). Implement connection pooling, prepared statements, and batch operations for performance",
+        "testStrategy": "Verify database schema creation, test all CRUD operations, validate foreign key constraints, confirm connection pooling works, test batch insert performance, verify audit logging captures all events, and test database backup/recovery procedures",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design and Create PostgreSQL Database Schema",
+            "description": "Create comprehensive database schema with all required tables for state management and audit logging",
+            "dependencies": [],
+            "details": "Create SQL migration scripts for process_states_table (process_id UUID PRIMARY KEY, client_id VARCHAR, project_id VARCHAR, status VARCHAR, pending_tasks INT, completed_tasks INT, failed_tasks INT, created_at TIMESTAMP, updated_at TIMESTAMP), task_states_table (task_id UUID PRIMARY KEY, process_id UUID REFERENCES process_states_table, media_id VARCHAR, analysis_id VARCHAR, status VARCHAR, processing_start_time TIMESTAMP, processing_end_time TIMESTAMP, qa_attempts INT DEFAULT 0, confidence_score DECIMAL), qa_attempts_table (attempt_id UUID PRIMARY KEY, task_id UUID REFERENCES task_states_table, qa_stage VARCHAR, validation_result BOOLEAN, failure_reasons TEXT[], corrective_prompt_used TEXT, attempt_timestamp TIMESTAMP), and audit_logs_table (log_id UUID PRIMARY KEY, process_id UUID REFERENCES process_states_table, event_type VARCHAR, event_data JSONB, timestamp TIMESTAMP). Include proper indexes, constraints, and foreign key relationships.",
+            "status": "pending",
+            "testStrategy": "Verify schema creation with migration scripts, test all table constraints and foreign key relationships, validate data types and indexes, confirm proper CASCADE behaviors"
+          },
+          {
+            "id": 2,
+            "title": "Implement Database Connection Pool and Configuration",
+            "description": "Setup PostgreSQL connection pooling with configuration management for optimal performance",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Implement connection pooling using pgbouncer or similar solution with configurable pool sizes (min 5, max 20 connections), connection timeout settings, and health checks. Create database configuration class with environment-based settings for host, port, database name, credentials, SSL settings, and pool parameters. Implement connection retry logic with exponential backoff and circuit breaker pattern for resilience. Add connection monitoring and metrics collection for pool utilization and query performance.",
+            "status": "pending",
+            "testStrategy": "Test connection pool initialization and configuration loading, verify connection limits and timeout handling, test connection recovery after database restart, validate metrics collection"
+          },
+          {
+            "id": 3,
+            "title": "Create Database Access Layer with Prepared Statements",
+            "description": "Implement data access objects with prepared statements for all CRUD operations on state management tables",
+            "dependencies": [
+              "5.2"
+            ],
+            "details": "Create ProcessStateDAO, TaskStateDAO, QAAttemptDAO, and AuditLogDAO classes with prepared statements for all operations. Implement methods: create_process_state(), update_process_status(), get_process_by_id(), create_task_state(), update_task_status(), increment_qa_attempts(), log_qa_attempt(), create_audit_log(), get_audit_logs_by_process(). Use parameterized queries to prevent SQL injection. Implement proper error handling with specific exception types for constraint violations, connection errors, and data validation failures. Add query result caching for frequently accessed read-only data.",
+            "status": "pending",
+            "testStrategy": "Test all CRUD operations with valid and invalid data, verify prepared statement parameter binding, test error handling for constraint violations, validate query performance and caching"
+          },
+          {
+            "id": 4,
+            "title": "Implement Batch Operations and Transaction Management",
+            "description": "Create batch processing capabilities and transaction management for high-performance bulk operations",
+            "dependencies": [
+              "5.3"
+            ],
+            "details": "Implement batch insert/update operations using PostgreSQL COPY command or batch prepared statements for bulk task state updates, audit log insertions, and QA attempt logging. Create transaction manager with support for nested transactions, savepoints, and rollback scenarios. Implement batch_insert_task_states(), batch_update_process_counts(), bulk_audit_log(), and batch_qa_attempts() methods with configurable batch sizes (default 1000 records). Add performance monitoring for batch operations and automatic batch size optimization based on system performance.",
+            "status": "pending",
+            "testStrategy": "Test batch operations with various data sizes, verify transaction rollback scenarios, validate batch size optimization, test concurrent batch operations, measure performance improvements over individual operations"
+          },
+          {
+            "id": 5,
+            "title": "Create State Management Service and Audit System",
+            "description": "Implement high-level state management service with comprehensive audit logging and monitoring capabilities",
+            "dependencies": [
+              "5.4"
+            ],
+            "details": "Create StateManager service class that orchestrates all database operations with methods: start_process(), update_task_progress(), handle_qa_failure(), complete_process(), get_process_summary(). Implement comprehensive audit logging for all state changes with event types: PROCESS_STARTED, TASK_ASSIGNED, TASK_COMPLETED, TASK_FAILED, QA_ATTEMPT, PROCESS_COMPLETED. Add real-time monitoring dashboard data collection for process metrics, task completion rates, QA failure patterns, and system performance. Implement state consistency validation and automatic recovery mechanisms for orphaned tasks or inconsistent states.",
+            "status": "pending",
+            "testStrategy": "Test complete process lifecycle from start to completion, verify audit trail completeness, test state consistency validation, validate monitoring data accuracy, test automatic recovery scenarios"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Build OpenAI Agent SDK QA System with LiteLLM Integration",
+        "description": "Implement three-tier QA validation system using OpenAI Agent SDK with local LLM processing through LiteLLM for structural, content quality, and domain expert validation",
+        "details": "Create EnhancedQAOrchestrator class with Agent SDK integration, implement StructuralValidationAgent, ContentQualityAgent, and DomainExpertAgent classes using OpenAI Agent SDK framework, configure LiteLLM for ollama/qwen2.5vl:latest model access, implement sequential validation workflow with context sharing, create agent coordination system with result aggregation, and implement corrective processing trigger mechanism with stage-specific prompt generation",
+        "testStrategy": "Test Agent SDK initialization and configuration, verify LiteLLM integration with local Ollama, validate three-tier sequential processing, test agent coordination and context sharing, confirm corrective processing triggers work correctly, and validate agent tool functionality",
+        "priority": "high",
+        "dependencies": [
+          2,
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Setup LiteLLM Configuration and OpenAI Agent SDK Foundation",
+            "description": "Configure LiteLLM for local Ollama integration with qwen2.5vl:latest model and establish OpenAI Agent SDK foundation with proper initialization and configuration management",
+            "dependencies": [],
+            "details": "Install and configure LiteLLM package with Ollama backend pointing to qwen2.5vl:latest model. Create configuration management for LiteLLM endpoints, API keys, and model parameters. Initialize OpenAI Agent SDK with proper client configuration and establish base agent framework. Implement connection testing and health checks for both LiteLLM and Agent SDK components. Create configuration classes for agent settings and model parameters.",
+            "status": "pending",
+            "testStrategy": "Test LiteLLM connection to local Ollama instance, verify qwen2.5vl:latest model accessibility, validate OpenAI Agent SDK initialization, and confirm configuration loading works correctly"
+          },
+          {
+            "id": 2,
+            "title": "Implement Three Specialized Validation Agents",
+            "description": "Create StructuralValidationAgent, ContentQualityAgent, and DomainExpertAgent classes using OpenAI Agent SDK framework with specialized validation logic and LiteLLM integration",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Implement StructuralValidationAgent class inheriting from Agent SDK base with tools for checking data structure, format compliance, and required field validation. Create ContentQualityAgent with tools for assessing content accuracy, completeness, and consistency. Develop DomainExpertAgent with specialized domain knowledge validation tools. Each agent should integrate with LiteLLM for model inference, implement specific validation prompts, and provide structured validation results with confidence scores and detailed feedback.",
+            "status": "pending",
+            "testStrategy": "Test each agent individually with sample data, verify LiteLLM integration works for all agents, validate agent tool functionality, and confirm structured output format"
+          },
+          {
+            "id": 3,
+            "title": "Build EnhancedQAOrchestrator with Agent Coordination System",
+            "description": "Create the main orchestrator class that manages the three validation agents, implements sequential workflow execution, and handles agent coordination with context sharing",
+            "dependencies": [
+              "6.2"
+            ],
+            "details": "Implement EnhancedQAOrchestrator class that manages agent lifecycle, coordinates sequential execution of StructuralValidationAgent -> ContentQualityAgent -> DomainExpertAgent. Create context sharing mechanism to pass validation results between agents. Implement agent state management, error handling for agent failures, and result aggregation system. Include agent pool management for concurrent processing and implement proper cleanup and resource management.",
+            "status": "pending",
+            "testStrategy": "Test sequential agent execution workflow, verify context sharing between agents, validate result aggregation accuracy, and test error handling when agents fail"
+          },
+          {
+            "id": 4,
+            "title": "Implement Sequential Validation Workflow with Result Aggregation",
+            "description": "Create the core validation workflow that processes data through all three agents sequentially, aggregates results, and determines overall validation status",
+            "dependencies": [
+              "6.3"
+            ],
+            "details": "Implement workflow engine that executes validation stages in sequence: structural -> content quality -> domain expert. Create result aggregation logic that combines validation scores, identifies failure patterns, and generates comprehensive validation reports. Implement validation threshold management, confidence score calculation, and overall pass/fail determination. Include detailed logging for each validation stage and create structured output format for downstream processing.",
+            "status": "pending",
+            "testStrategy": "Test complete validation workflow with various data types, verify result aggregation logic, validate threshold-based pass/fail decisions, and confirm detailed logging captures all stages"
+          },
+          {
+            "id": 5,
+            "title": "Implement Corrective Processing Trigger Mechanism",
+            "description": "Create the corrective processing system that triggers when validation fails, generates stage-specific corrective prompts, and manages retry workflows",
+            "dependencies": [
+              "6.4"
+            ],
+            "details": "Implement corrective processing trigger that activates when validation fails at any stage. Create stage-specific prompt generation system that analyzes failure reasons and generates targeted corrective prompts for structural issues, content quality problems, or domain expertise gaps. Implement retry workflow management with configurable retry limits, exponential backoff, and failure escalation. Include corrective action logging and integration with the main QA workflow for seamless retry processing.",
+            "status": "pending",
+            "testStrategy": "Test corrective processing triggers for each validation stage, verify stage-specific prompt generation accuracy, validate retry workflow with different failure scenarios, and confirm integration with main QA system"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement GoFlow API Integration and Job Management",
+        "description": "Create comprehensive GoFlow API integration for job acquisition, status management, result submission, and report generation with authentication and error handling",
+        "details": "Implement GoFlow API client with endpoints for job acquisition (GET /api/v1/agent/next-job), status updates (PUT /api/v1/agent/projects/{projectId}/status), result submission (POST /api/v1/agent/projects/{projectId}/media/{mediaId}/analysis/{analysisId}), and report generation (PUT /api/v1/agent/projects/{projectId}/reports). Include authentication headers, retry logic, timeout handling, data extraction for client/project/media/analysis fields, and comprehensive error handling with logging",
+        "testStrategy": "Test API authentication and connectivity, verify job acquisition polling, validate status update functionality, test result submission with proper data structure, confirm report generation works, test error handling and retry logic, and validate data extraction accuracy",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          5
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement GoFlow API Client Base Infrastructure",
+            "description": "Create the foundational GoFlow API client with authentication, connection management, and base HTTP client configuration",
+            "dependencies": [],
+            "details": "Create GoFlowAPIClient class with authentication header management (API key/token), HTTP client configuration with appropriate timeouts (30s connection, 120s read), SSL verification, base URL configuration, and request/response logging. Implement connection pooling and session management for efficient API communication. Include base error handling for HTTP status codes and network errors.",
+            "status": "pending",
+            "testStrategy": "Test API client initialization, verify authentication headers are properly set, test connection timeout handling, validate SSL certificate verification, and confirm base error handling for network failures"
+          },
+          {
+            "id": 2,
+            "title": "Implement Job Acquisition and Status Management Endpoints",
+            "description": "Develop job acquisition polling mechanism and project status update functionality with retry logic",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Implement GET /api/v1/agent/next-job endpoint with polling mechanism, job data extraction (client_id, project_id, media_id, analysis_id), and job queue management. Create PUT /api/v1/agent/projects/{projectId}/status endpoint for status updates (pending, processing, completed, failed). Include exponential backoff retry logic (3 attempts, 1s, 2s, 4s delays), timeout handling, and proper HTTP status code handling (200, 404, 429, 500).",
+            "status": "pending",
+            "testStrategy": "Test job acquisition polling with various response scenarios, verify status update functionality across all status types, validate retry logic with simulated failures, test timeout handling, and confirm proper data extraction from job responses"
+          },
+          {
+            "id": 3,
+            "title": "Implement Result Submission and Report Generation Endpoints",
+            "description": "Create analysis result submission and report generation endpoints with proper data formatting and validation",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Implement POST /api/v1/agent/projects/{projectId}/media/{mediaId}/analysis/{analysisId} endpoint for submitting analysis results with proper JSON payload formatting, confidence scores, and metadata. Create PUT /api/v1/agent/projects/{projectId}/reports endpoint for report generation with batch processing support. Include data validation, payload size limits (10MB), and proper content-type headers (application/json).",
+            "status": "pending",
+            "testStrategy": "Test result submission with various analysis types and payload sizes, verify report generation functionality, validate data formatting and JSON structure, test payload size limits, and confirm proper error handling for malformed data"
+          },
+          {
+            "id": 4,
+            "title": "Implement Comprehensive Error Handling and Logging System",
+            "description": "Create robust error handling, logging, and monitoring system for all API operations with detailed error categorization",
+            "dependencies": [
+              "7.1",
+              "7.2",
+              "7.3"
+            ],
+            "details": "Implement comprehensive error handling with categorized exceptions (AuthenticationError, NetworkError, ValidationError, ServerError), detailed error logging with structured format (timestamp, endpoint, error_type, error_message, request_id), retry logic with circuit breaker pattern, and error metrics collection. Include rate limiting detection (429 responses), server error handling (5xx), and client error handling (4xx) with appropriate user feedback.",
+            "status": "pending",
+            "testStrategy": "Test all error scenarios (authentication failures, network timeouts, server errors, rate limiting), verify error logging format and completeness, validate retry logic and circuit breaker functionality, test error metrics collection, and confirm appropriate error messages are returned"
+          },
+          {
+            "id": 5,
+            "title": "Integrate API Client with Job Management Workflow",
+            "description": "Integrate the GoFlow API client with the overall job management system and implement end-to-end workflow coordination",
+            "dependencies": [
+              "7.1",
+              "7.2",
+              "7.3",
+              "7.4"
+            ],
+            "details": "Create JobManager class that orchestrates the complete workflow: job acquisition → processing coordination → result submission → report generation. Implement job state persistence, progress tracking, and coordination with Redis queues and PostgreSQL state management. Include job scheduling, priority handling, batch processing coordination, and integration with Discord notifications for job lifecycle events. Add performance monitoring and SLA tracking.",
+            "status": "pending",
+            "testStrategy": "Test complete end-to-end job workflow from acquisition to completion, verify integration with Redis queues and PostgreSQL state management, validate job state persistence and recovery, test batch processing coordination, confirm Discord notification integration, and validate performance metrics collection"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Develop Image Management and Processing Pipeline",
+        "description": "Implement intelligent image download, caching, validation, and preprocessing system with support for optimized and greyscale image paths",
+        "details": "Create image download system with primary/fallback path resolution (optimised_path/greyscale_path), implement local caching with configurable TTL and compression, add image validation for supported formats (jpg, jpeg, png, webp), size constraints (max 100MB, resolution 640x480 to 4096x4096), preprocessing with auto-orientation and color space validation, thumbnail generation capabilities, and storage optimization with automatic cleanup",
+        "testStrategy": "Test image download from both optimized and greyscale paths, verify caching functionality and TTL expiration, validate image format and size constraints, test preprocessing operations, confirm storage optimization and cleanup, and validate concurrent download handling",
+        "priority": "medium",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Image Download System with Primary/Fallback Path Resolution",
+            "description": "Create intelligent image download system that attempts to fetch images from optimized_path first, then falls back to greyscale_path if the primary source fails or is unavailable",
+            "dependencies": [],
+            "details": "Implement async HTTP client with configurable timeout and retry logic. Create path resolution logic that prioritizes optimized_path over greyscale_path. Include error handling for network failures, HTTP errors (404, 500, etc.), and connection timeouts. Implement download progress tracking and cancellation support. Add support for common image formats (jpg, jpeg, png, webp) with proper MIME type validation during download.",
+            "status": "pending",
+            "testStrategy": "Test successful downloads from both optimized and greyscale paths, verify fallback mechanism when primary path fails, test timeout and retry behavior, validate MIME type detection, and confirm proper error handling for various failure scenarios"
+          },
+          {
+            "id": 2,
+            "title": "Develop Local Caching System with TTL and Compression",
+            "description": "Implement local file-based caching system with configurable Time-To-Live (TTL) settings and optional compression to optimize storage usage and reduce redundant downloads",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Create cache directory structure with metadata files storing TTL, compression settings, and original URLs. Implement cache key generation using URL hashing. Add configurable compression using gzip or similar for storage optimization. Include cache validation logic to check TTL expiration and file integrity. Implement cache cleanup routines for expired entries and storage limit management. Add cache statistics tracking (hit/miss ratios, storage usage).",
+            "status": "pending",
+            "testStrategy": "Verify cache storage and retrieval functionality, test TTL expiration and cleanup, validate compression effectiveness, confirm cache key uniqueness, test concurrent cache access, and verify cache statistics accuracy"
+          },
+          {
+            "id": 3,
+            "title": "Implement Image Validation and Format Constraints",
+            "description": "Create comprehensive image validation system that verifies supported formats, enforces size constraints, and validates image integrity before processing",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Implement format validation for jpg, jpeg, png, and webp using both file extension and magic number detection. Add file size validation (max 100MB) and resolution constraints (640x480 to 4096x4096 pixels). Include image integrity checks using PIL/Pillow to detect corrupted files. Implement metadata extraction for EXIF data and color profile information. Add validation reporting with detailed error messages for rejected images.",
+            "status": "pending",
+            "testStrategy": "Test format validation with various image types, verify size and resolution constraint enforcement, test corrupted image detection, validate metadata extraction accuracy, and confirm proper error reporting for invalid images"
+          },
+          {
+            "id": 4,
+            "title": "Develop Image Preprocessing and Thumbnail Generation",
+            "description": "Implement image preprocessing pipeline with auto-orientation correction, color space validation, and thumbnail generation capabilities for optimized image handling",
+            "dependencies": [
+              "8.3"
+            ],
+            "details": "Implement EXIF-based auto-orientation correction to ensure proper image display. Add color space validation and conversion (RGB, CMYK, Grayscale) with sRGB standardization. Create thumbnail generation with configurable sizes and quality settings while maintaining aspect ratios. Include preprocessing options for brightness/contrast adjustment and noise reduction. Implement batch processing capabilities for multiple images with progress tracking.",
+            "status": "pending",
+            "testStrategy": "Test auto-orientation correction with various EXIF orientations, verify color space conversion accuracy, validate thumbnail generation quality and sizing, test batch processing performance, and confirm preprocessing consistency across different image types"
+          },
+          {
+            "id": 5,
+            "title": "Implement Storage Optimization and Automatic Cleanup",
+            "description": "Create storage management system with automatic cleanup routines, storage optimization strategies, and monitoring capabilities to maintain efficient disk usage",
+            "dependencies": [
+              "8.2",
+              "8.4"
+            ],
+            "details": "Implement storage monitoring with configurable disk usage thresholds and alerts. Create automatic cleanup routines based on TTL expiration, LRU (Least Recently Used) eviction, and storage limits. Add storage optimization through duplicate detection using image hashing and smart compression strategies. Implement cleanup scheduling with configurable intervals and maintenance windows. Include storage analytics and reporting for usage patterns and cleanup effectiveness.",
+            "status": "pending",
+            "testStrategy": "Test automatic cleanup triggers and effectiveness, verify storage threshold monitoring, validate duplicate detection accuracy, test LRU eviction logic, confirm storage analytics accuracy, and verify cleanup scheduling functionality"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Build Analysis Workflow Engine with Parallel Processing",
+        "description": "Create the core 21-stage analysis workflow engine with 8-thread parallel processing, model optimization, and intelligent load balancing across 16 GPU compute cores",
+        "details": "Implement analysis workflow controller that processes images through all 21 analysis types using qwen2.5vl:32b model, create parallel processing coordinator for 8-thread execution with intelligent load balancing across 16 GPU cores, implement dynamic parameter adjustment based on analysis complexity, create result aggregation system, implement timeout handling and error recovery, and integrate with QA system for validation and correction cycles",
+        "testStrategy": "Test all 21 analysis types process correctly, verify 8-thread parallel processing performance, validate load balancing across GPU cores, test dynamic parameter adjustment, confirm result aggregation accuracy, validate timeout and error handling, and test QA integration workflow",
+        "priority": "high",
+        "dependencies": [
+          2,
+          6,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Analysis Workflow Controller Core",
+            "description": "Create the central workflow controller that orchestrates all 21 analysis types using the qwen2.5vl:32b model, managing the sequential execution pipeline and stage transitions",
+            "dependencies": [],
+            "details": "Implement WorkflowController class with methods for initializing analysis pipeline, loading 21 analysis configurations from YAML files, creating analysis stage objects for each type (ages, themes, emotions, etc.), implementing stage execution logic with model invocation, managing stage state transitions, and providing workflow status tracking. Include error handling for model failures and stage rollback capabilities.",
+            "status": "pending",
+            "testStrategy": "Test workflow initialization with all 21 analysis types, verify stage execution order, validate model parameter application, test error handling and rollback functionality, and confirm workflow status tracking accuracy"
+          },
+          {
+            "id": 2,
+            "title": "Create Parallel Processing Coordinator with 8-Thread Management",
+            "description": "Develop the parallel processing coordinator that manages 8 concurrent threads for analysis execution with thread pool management and task distribution",
+            "dependencies": [
+              "9.1"
+            ],
+            "details": "Implement ParallelProcessingCoordinator class with ThreadPoolExecutor configuration for 8 worker threads, task queue management for distributing analysis jobs, thread synchronization mechanisms, worker thread lifecycle management, and thread health monitoring. Include thread-safe result collection, deadlock prevention, and graceful shutdown procedures.",
+            "status": "pending",
+            "testStrategy": "Test 8-thread pool initialization and management, verify task distribution across threads, validate thread synchronization and safety, test worker thread health monitoring, and confirm graceful shutdown functionality"
+          },
+          {
+            "id": 3,
+            "title": "Implement Intelligent GPU Load Balancing System",
+            "description": "Create intelligent load balancing system that distributes computational workload across 16 GPU cores with dynamic resource allocation and performance optimization",
+            "dependencies": [
+              "9.2"
+            ],
+            "details": "Implement GPULoadBalancer class with GPU core discovery and enumeration, real-time GPU utilization monitoring, intelligent task assignment algorithm based on GPU memory and compute availability, dynamic load redistribution, and GPU health checking. Include CUDA/OpenCL integration for GPU management and performance metrics collection.",
+            "status": "pending",
+            "testStrategy": "Test GPU core detection and enumeration, verify load balancing algorithm effectiveness, validate dynamic task redistribution, test GPU utilization monitoring accuracy, and confirm performance optimization under various load conditions"
+          },
+          {
+            "id": 4,
+            "title": "Develop Dynamic Parameter Adjustment and Result Aggregation",
+            "description": "Create dynamic parameter adjustment system based on analysis complexity and implement comprehensive result aggregation from all analysis stages",
+            "dependencies": [
+              "9.1",
+              "9.2",
+              "9.3"
+            ],
+            "details": "Implement DynamicParameterManager for analyzing task complexity and adjusting model parameters (temperature, top_p, top_k, num_ctx) in real-time, and ResultAggregator class for collecting results from all 21 analysis types, merging overlapping insights, resolving conflicts between analysis results, and generating comprehensive analysis reports. Include complexity scoring algorithm and result validation logic.",
+            "status": "pending",
+            "testStrategy": "Test dynamic parameter adjustment based on various complexity scenarios, verify result aggregation accuracy across all 21 analysis types, validate conflict resolution mechanisms, test comprehensive report generation, and confirm parameter optimization effectiveness"
+          },
+          {
+            "id": 5,
+            "title": "Implement Timeout Handling, Error Recovery, and QA Integration",
+            "description": "Create robust timeout handling and error recovery mechanisms, and integrate with QA system for validation and correction cycles",
+            "dependencies": [
+              "9.4"
+            ],
+            "details": "Implement TimeoutManager for setting analysis-specific timeouts, ErrorRecoverySystem for handling failures with retry logic and fallback strategies, and QAIntegration module for connecting with validation systems. Include circuit breaker pattern for preventing cascade failures, comprehensive logging and monitoring, and integration with corrective processing queues for failed analyses.",
+            "status": "pending",
+            "testStrategy": "Test timeout handling for various analysis durations, verify error recovery and retry mechanisms, validate QA system integration and correction cycles, test circuit breaker functionality, and confirm comprehensive error logging and monitoring"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Implement Discord Notification System and Performance Monitoring",
+        "description": "Create comprehensive Discord webhook notification system with multi-channel support and advanced performance monitoring with Prometheus metrics",
+        "details": "Implement Discord webhook integration with 5 specialized channels (batch_manifest, qa_structural, qa_content, qa_domain, batch_report), create notification formatting with embeds and color coding, implement performance metrics collection for Prometheus (/metrics endpoint) including throughput, latency, quality, and resource utilization metrics, create health check endpoint (/health), implement alerting for SLA breaches and critical errors, and create comprehensive analytics dashboard with predictive insights",
+        "testStrategy": "Test Discord webhook functionality across all channels, verify notification formatting and color coding, validate Prometheus metrics collection and format, test health check endpoint reliability, confirm alerting triggers work correctly, validate analytics data accuracy, and test performance under load",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          4,
+          5,
+          9
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Discord Webhook Integration with Multi-Channel Support",
+            "description": "Create Discord webhook client with support for 5 specialized channels (batch_manifest, qa_structural, qa_content, qa_domain, batch_report) including webhook URL management, message formatting with embeds, and color-coded notifications",
+            "dependencies": [],
+            "details": "Implement DiscordWebhookClient class with methods for each channel type. Create webhook URL configuration management, implement Discord embed formatting with color coding (green for success, yellow for warnings, red for errors), add message queuing for rate limiting, and include retry logic for failed webhook deliveries. Support rich formatting with fields, timestamps, and thumbnails.",
+            "status": "pending",
+            "testStrategy": "Test webhook connectivity to all 5 channels, verify embed formatting and color coding, validate rate limiting and retry logic, test message delivery under various network conditions"
+          },
+          {
+            "id": 2,
+            "title": "Create Prometheus Metrics Collection System",
+            "description": "Implement comprehensive Prometheus metrics collection for throughput, latency, quality scores, and resource utilization with proper metric types and labels",
+            "dependencies": [
+              "10.1"
+            ],
+            "details": "Create PrometheusMetrics class with Counter, Histogram, and Gauge metrics. Implement throughput metrics (jobs_processed_total, jobs_failed_total), latency metrics (job_processing_duration_seconds), quality metrics (analysis_quality_score), and resource metrics (memory_usage_bytes, cpu_usage_percent). Add proper labels for analysis_type, worker_id, and status. Include metric collection decorators for automatic instrumentation.",
+            "status": "pending",
+            "testStrategy": "Verify all metric types are properly registered, test metric collection accuracy, validate label consistency, confirm metric persistence across service restarts"
+          },
+          {
+            "id": 3,
+            "title": "Implement Health Check and Metrics Endpoints",
+            "description": "Create /health and /metrics HTTP endpoints for service monitoring with dependency health checks and Prometheus metrics exposition",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Implement FastAPI endpoints for health checks and metrics exposition. Health endpoint should check Redis connectivity, GoFlow API availability, disk space, memory usage, and worker pool status. Metrics endpoint should expose Prometheus-formatted metrics with proper content-type headers. Include detailed health status with component-level checks and response times.",
+            "status": "pending",
+            "testStrategy": "Test health endpoint returns proper status codes, verify metrics endpoint format compliance with Prometheus, validate dependency health checks accuracy, test endpoint performance under load"
+          },
+          {
+            "id": 4,
+            "title": "Create SLA Monitoring and Alerting System",
+            "description": "Implement automated alerting for SLA breaches, critical errors, and performance degradation with configurable thresholds and escalation policies",
+            "dependencies": [
+              "10.2",
+              "10.3"
+            ],
+            "details": "Create AlertingManager class with configurable SLA thresholds (processing time, error rates, queue lengths). Implement alert conditions for job processing delays >30min, error rates >5%, queue backlog >100 items, and worker failures. Include alert escalation with immediate Discord notifications for critical issues and periodic summaries. Add alert suppression to prevent spam and alert resolution tracking.",
+            "status": "pending",
+            "testStrategy": "Test SLA threshold detection accuracy, verify alert triggering conditions, validate Discord alert formatting, test alert suppression and escalation logic"
+          },
+          {
+            "id": 5,
+            "title": "Build Analytics Dashboard with Predictive Insights",
+            "description": "Create comprehensive analytics dashboard with real-time metrics visualization, historical trend analysis, and predictive insights for capacity planning and performance optimization",
+            "dependencies": [
+              "10.2",
+              "10.3",
+              "10.4"
+            ],
+            "details": "Implement AnalyticsDashboard class with real-time metric aggregation, historical data storage in time-series format, and trend analysis algorithms. Create predictive models for job completion times, resource utilization forecasting, and capacity planning recommendations. Include dashboard endpoints for metric queries, trend data, and prediction results. Add data retention policies and efficient querying for large datasets.",
+            "status": "pending",
+            "testStrategy": "Validate real-time metric accuracy, test historical data aggregation, verify predictive model accuracy against actual outcomes, test dashboard query performance with large datasets"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-09T12:21:40.059Z",
+      "updated": "2025-08-09T12:21:40.059Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
