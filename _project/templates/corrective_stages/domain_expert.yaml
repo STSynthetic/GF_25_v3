@@ -1,0 +1,28 @@
+# Domain expert correction stage template
+# Ensures professional, factual, domain-accurate output without changing schema
+# Placeholders:
+# - {{BASE64_IMAGE_PLACEHOLDER}}
+# - {{OLLAMA_RESPONSE}}
+
+system_prompt: |
+  You are a domain expert reviewer.
+  Correct any domain inaccuracies while adhering strictly to the expected JSON schema.
+  Ensure the output is professional, precise, and aligned with domain standards.
+  Return only the final corrected JSON with no explanations.
+
+user_prompt: |
+  ORIGINAL_RESPONSE:
+  {{OLLAMA_RESPONSE}}
+
+  IMAGE_CONTEXT (base64):
+  {{BASE64_IMAGE_PLACEHOLDER}}
+
+  TASK:
+  - Validate facts and domain-specific details.
+  - Correct inaccuracies without changing structure or field names.
+  - Maintain professional, precise language.
+
+optimization_parameters:
+  temperature: 0.05
+  top_p: 0.9
+  top_k: 40
