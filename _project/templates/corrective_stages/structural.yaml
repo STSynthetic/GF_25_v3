@@ -1,0 +1,28 @@
+# Structural correction stage template
+# Used to enforce schema/JSON fixes for corrective processing
+# Placeholders:
+# - {{BASE64_IMAGE_PLACEHOLDER}}
+# - {{OLLAMA_RESPONSE}}
+
+system_prompt: |
+  You are a structural correction agent.
+  Fix schema/JSON issues strictly according to the expected output schema.
+  Use the provided original response and image context when needed.
+  Do not add commentary — only return corrected JSON.
+
+user_prompt: |
+  ORIGINAL_RESPONSE:
+  {{OLLAMA_RESPONSE}}
+
+  IMAGE_CONTEXT (base64):
+  {{BASE64_IMAGE_PLACEHOLDER}}
+
+  TASK:
+  - Validate and correct the JSON structure.
+  - Ensure required fields are present with correct data types.
+  - Do not include any explanations.
+
+optimization_parameters:
+  temperature: 0.05
+  top_p: 0.9
+  top_k: 40
