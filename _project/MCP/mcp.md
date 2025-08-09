@@ -8,7 +8,7 @@
         "run",
         "@smithery-ai/github",
         "--config",
-        "{\"githubPersonalAccessToken\":\"***REDACTED***\"}"
+        "{\"githubPersonalAccessToken\":\"${GITHUB_PAT}\"}"
       ]
     },
     "Browser-Tools": {
