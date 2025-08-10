@@ -6,6 +6,8 @@ from typing import Any
 import httpx
 from pydantic import BaseModel, Field, HttpUrl
 
+from app.api.goflow_models import Job, JobStatusUpdate
+
 try:  # Optional retry support per [ASYNC-CORE]
     from tenacity import (  # type: ignore
         AsyncRetrying,
@@ -89,7 +91,20 @@ class GoFlowClient:
         resp.raise_for_status()
         return resp.json()
 
-    async def post(self, path: str, json: dict[str, Any] | None = None) -> dict[str, Any]:  # noqa: A002
+    async def post(self, path: str, json: Dict[str, Any] | None = None) -> Dict[str, Any]:  # noqa: A002
         resp = await self._request("POST", path, json=json)
         resp.raise_for_status()
         return resp.json()
+
+    # ---- Task 7.2: Job Acquisition and Status Management ----
+    async def get_next_job(self) -> Job:
+        """Fetch the next available job for this agent."""
+        data = await self.get("/api/v1/agent/next-job")
+        return Job.model_validate(data)
+
+    async def update_project_status(
+        self, project_id: str, update: JobStatusUpdate
+    ) -> Dict[str, Any]:
+        """Update processing status for a project (agent heartbeat/progress)."""
+        path = f"/api/v1/agent/projects/{project_id}/status"
+        return await self.post(path, json=update.model_dump())
