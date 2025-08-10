@@ -3,8 +3,8 @@ from typing import Any
 
 import pytest
 
-from app.services.goflow_workflow import GoFlowWorkflow, ProcessResult
 from app.api.goflow_models import Job, JobStatusUpdate
+from app.services.goflow_workflow import GoFlowWorkflow, ProcessResult
 
 
 class FakeClient:

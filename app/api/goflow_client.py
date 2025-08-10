@@ -1,18 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Dict, Optional
 import logging
+from typing import Any
+
 import httpx
 from pydantic import BaseModel, Field, HttpUrl
 
-from app.api.goflow_models import (
-    Job,
-    JobStatusUpdate,
-    ReportRequest,
-    ReportResponse,
-    ResultPayload,
-)
 from app.api.goflow_errors import (
     GoFlowAuthError,
     GoFlowClientError,
@@ -20,6 +14,13 @@ from app.api.goflow_errors import (
     GoFlowNotFound,
     GoFlowRetryableError,
     GoFlowServerError,
+)
+from app.api.goflow_models import (
+    Job,
+    JobStatusUpdate,
+    ReportRequest,
+    ReportResponse,
+    ResultPayload,
 )
 
 try:  # Optional retry support per [ASYNC-CORE]
@@ -50,7 +51,7 @@ class GoFlowClient:
 
     def __init__(self, cfg: GoFlowConfig) -> None:
         self.cfg = cfg
-        self._client: Optional[httpx.AsyncClient] = None
+        self._client: httpx.AsyncClient | None = None
         self._lock = asyncio.Lock()
         self._log = logging.getLogger(__name__)
 
@@ -105,7 +106,7 @@ class GoFlowClient:
 
         # Fallback retry when tenacity is unavailable
         attempts = max(1, self.cfg.max_retries or 1)
-        last_exc: Optional[Exception] = None
+        last_exc: Exception | None = None
         for i in range(attempts):
             try:
                 resp = await self.client.request(method, url, **kwargs)
@@ -157,7 +158,7 @@ class GoFlowClient:
         resp.raise_for_status()
         return resp.json()
 
-    async def post(self, path: str, json: Dict[str, Any] | None = None) -> Dict[str, Any]:  # noqa: A002
+    async def post(self, path: str, json: dict[str, Any] | None = None) -> dict[str, Any]:  # noqa: A002
         resp = await self._request("POST", path, json=json)
         resp.raise_for_status()
         return resp.json()
@@ -170,13 +171,13 @@ class GoFlowClient:
 
     async def update_project_status(
         self, project_id: str, update: JobStatusUpdate
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Update processing status for a project (agent heartbeat/progress)."""
         path = f"/api/v1/agent/projects/{project_id}/status"
         return await self.post(path, json=update.model_dump())
 
     # ---- Task 7.3: Result Submission and Report Generation ----
-    async def submit_analysis_result(self, payload: ResultPayload) -> Dict[str, Any]:
+    async def submit_analysis_result(self, payload: ResultPayload) -> dict[str, Any]:
         """Submit analysis result for a specific project/media/analysis."""
         path = (
             f"/api/v1/agent/projects/{payload.project_id}/media/"

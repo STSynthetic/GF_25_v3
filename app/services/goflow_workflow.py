@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import asyncio
 import logging
-from typing import Any, Awaitable, Callable, Optional
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from pydantic import BaseModel, Field
 
-from app.api.goflow_client import GoFlowClient, GoFlowConfig
+from app.api.goflow_client import GoFlowClient
 from app.api.goflow_models import Job, JobStatusUpdate, ReportRequest, ResultPayload
 
 
@@ -29,7 +29,7 @@ class GoFlowWorkflow:
             await wf.run_once(process_fn)
     """
 
-    def __init__(self, client: GoFlowClient, *, logger: Optional[logging.Logger] = None) -> None:
+    def __init__(self, client: GoFlowClient, *, logger: logging.Logger | None = None) -> None:
         self.client = client
         self.log = logger or logging.getLogger(__name__)
 
