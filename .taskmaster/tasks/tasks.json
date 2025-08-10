@@ -301,7 +301,7 @@
               "5.2"
             ],
             "details": "Create ProcessStateDAO, TaskStateDAO, QAAttemptDAO, and AuditLogDAO classes with prepared statements for all operations. Implement methods: create_process_state(), update_process_status(), get_process_by_id(), create_task_state(), update_task_status(), increment_qa_attempts(), log_qa_attempt(), create_audit_log(), get_audit_logs_by_process(). Use parameterized queries to prevent SQL injection. Implement proper error handling with specific exception types for constraint violations, connection errors, and data validation failures. Add query result caching for frequently accessed read-only data.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test all CRUD operations with valid and invalid data, verify prepared statement parameter binding, test error handling for constraint violations, validate query performance and caching"
           },
           {
@@ -312,7 +312,7 @@
               "5.3"
             ],
             "details": "Implement batch insert/update operations using PostgreSQL COPY command or batch prepared statements for bulk task state updates, audit log insertions, and QA attempt logging. Create transaction manager with support for nested transactions, savepoints, and rollback scenarios. Implement batch_insert_task_states(), batch_update_process_counts(), bulk_audit_log(), and batch_qa_attempts() methods with configurable batch sizes (default 1000 records). Add performance monitoring for batch operations and automatic batch size optimization based on system performance.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Test batch operations with various data sizes, verify transaction rollback scenarios, validate batch size optimization, test concurrent batch operations, measure performance improvements over individual operations"
           },
           {
@@ -684,7 +684,7 @@
     ],
     "metadata": {
       "created": "2025-08-09T12:21:40.059Z",
-      "updated": "2025-08-10T09:26:36.879Z",
+      "updated": "2025-08-10T09:34:37.418Z",
       "description": "Tasks for master context"
     }
   }

@@ -124,6 +124,33 @@ class TaskStateDAO:
             _task_cache.set(task_id, data)
             return data
 
+    async def create_tasks_bulk(self, items: list[tuple[str, str, str]]) -> list[str]:
+        """Bulk create tasks.
+
+        items: list of (task_id, analysis_type, status)
+        Returns task_ids in the same order.
+        """
+        Session = get_sessionmaker()
+        async with Session() as session:
+            q = text(
+                """
+                insert into tasks (task_id, analysis_type, status, created_at, updated_at)
+                values (:task_id, :analysis_type, :status, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                """
+            )
+            params = [
+                {"task_id": t, "analysis_type": a, "status": s} for (t, a, s) in items
+            ]
+            try:
+                await session.execute(q, params)  # executemany
+                await session.commit()
+                for (t, _a, _s) in items:
+                    _task_cache.invalidate(t)
+            except IntegrityError as e:
+                await session.rollback()
+                raise e
+        return [t for (t, _a, _s) in items]
+
 
 class ProcessStateDAO:
     async def create_process_state(self, task_id: str, worker_id: str, state: str) -> str:
@@ -241,6 +268,61 @@ class QAAttemptDAO:
             res = await session.execute(q, {"task_id": task_id})
             return int(res.scalar_one())
 
+    async def log_qa_attempts_bulk(
+        self,
+        items: list[dict[str, Any]],
+    ) -> list[str]:
+        """Bulk insert qa_attempts.
+
+        Each item keys: task_id, qa_stage, validation_result,
+        failure_reasons, corrective_prompt_used. Returns attempt_ids.
+        """
+        Session = get_sessionmaker()
+        attempt_ids: list[str] = []
+        async with Session() as session:
+            q = text(
+                """
+                insert into qa_attempts (
+                    attempt_id,
+                    task_id,
+                    qa_stage,
+                    validation_result,
+                    failure_reasons,
+                    corrective_prompt_used,
+                    created_at
+                ) values (
+                    :attempt_id,
+                    :task_id,
+                    :qa_stage,
+                    :validation_result,
+                    :failure_reasons,
+                    :corrective_prompt_used,
+                    CURRENT_TIMESTAMP
+                )
+                """
+            )
+            params = []
+            for it in items:
+                attempt_id = _uuid()
+                attempt_ids.append(attempt_id)
+                params.append(
+                    {
+                        "attempt_id": attempt_id,
+                        "task_id": it["task_id"],
+                        "qa_stage": it["qa_stage"],
+                        "validation_result": _json_param(it.get("validation_result")),
+                        "failure_reasons": _json_param(it.get("failure_reasons")),
+                        "corrective_prompt_used": it.get("corrective_prompt_used"),
+                    }
+                )
+            try:
+                await session.execute(q, params)
+                await session.commit()
+            except IntegrityError as e:
+                await session.rollback()
+                raise e
+        return attempt_ids
+
 
 class AuditLogDAO:
     async def create_audit_log(
@@ -291,3 +373,58 @@ class AuditLogDAO:
             rows = [dict(r) for r in res.mappings().all()]
             _audit_cache.set(process_id, rows)
             return rows
+
+    async def create_audit_logs_bulk(
+        self,
+        items: list[dict[str, Any]],
+    ) -> list[str]:
+        """Bulk insert audit logs. Each item has: process_id, event_type, event_data."""
+        Session = get_sessionmaker()
+        log_ids: list[str] = []
+        async with Session() as session:
+            q = text(
+                """
+                insert into audit_logs (log_id, process_id, event_type, event_data, timestamp)
+                values (:log_id, :process_id, :event_type, :event_data, CURRENT_TIMESTAMP)
+                """
+            )
+            params = []
+            for it in items:
+                log_id = _uuid()
+                log_ids.append(log_id)
+                params.append(
+                    {
+                        "log_id": log_id,
+                        "process_id": it["process_id"],
+                        "event_type": it["event_type"],
+                        "event_data": _json_param(it.get("event_data")),
+                    }
+                )
+            try:
+                await session.execute(q, params)
+                await session.commit()
+                for it in items:
+                    _audit_cache.invalidate(it["process_id"])
+            except IntegrityError as e:
+                await session.rollback()
+                raise e
+        return log_ids
+
+
+class TransactionManager:
+    """Helper to manage explicit transactions across multiple DAO calls."""
+
+    def __init__(self) -> None:
+        self._Session = get_sessionmaker()
+
+    async def __aenter__(self) -> AsyncSession:
+        self._session = self._Session()  # type: ignore[attr-defined]
+        await self._session.__aenter__()
+        return self._session
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:
+        if exc is None:
+            await self._session.commit()
+        else:
+            await self._session.rollback()
+        await self._session.__aexit__(exc_type, exc, tb)
