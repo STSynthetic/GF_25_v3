@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any
-
+from typing import Any, Dict, Optional
+import logging
 import httpx
 from pydantic import BaseModel, Field, HttpUrl
 
@@ -12,6 +12,14 @@ from app.api.goflow_models import (
     ReportRequest,
     ReportResponse,
     ResultPayload,
+)
+from app.api.goflow_errors import (
+    GoFlowAuthError,
+    GoFlowClientError,
+    GoFlowError,
+    GoFlowNotFound,
+    GoFlowRetryableError,
+    GoFlowServerError,
 )
 
 try:  # Optional retry support per [ASYNC-CORE]
@@ -42,8 +50,9 @@ class GoFlowClient:
 
     def __init__(self, cfg: GoFlowConfig) -> None:
         self.cfg = cfg
-        self._client: httpx.AsyncClient | None = None
+        self._client: Optional[httpx.AsyncClient] = None
         self._lock = asyncio.Lock()
+        self._log = logging.getLogger(__name__)
 
     async def __aenter__(self) -> GoFlowClient:
         async with self._lock:
@@ -72,25 +81,76 @@ class GoFlowClient:
         return self._client
 
     async def _request(self, method: str, url: str, **kwargs: Any) -> httpx.Response:
-        # Basic retry using tenacity if available
-        if AsyncRetrying is None or self.cfg.max_retries <= 0:
-            return await self.client.request(method, url, **kwargs)
+        # Tenacity-based retry path
+        if AsyncRetrying is not None and self.cfg.max_retries > 0:
+            async for attempt in AsyncRetrying(
+                reraise=True,
+                stop=stop_after_attempt(self.cfg.max_retries),
+                wait=wait_exponential_jitter(initial=0.2, max=2.0),
+                retry=retry_if_exception_type(
+                    (httpx.ConnectError, httpx.ReadTimeout, GoFlowRetryableError)
+                ),
+            ):
+                with attempt:
+                    resp = await self.client.request(method, url, **kwargs)
+                    if 500 <= resp.status_code < 600:
+                        self._log.warning(
+                            "server 5xx on %s %s -> %s", method, url, resp.status_code
+                        )
+                        raise GoFlowServerError(f"server error {resp.status_code}")
+                    self._raise_for_status_map(resp)
+                    return resp
 
-        async for attempt in AsyncRetrying(
-            reraise=True,
-            stop=stop_after_attempt(self.cfg.max_retries),
-            wait=wait_exponential_jitter(initial=0.2, max=2.0),
-            retry=retry_if_exception_type((httpx.ConnectError, httpx.ReadTimeout)),
-        ):
-            with attempt:
+            raise RuntimeError("Retry loop exited unexpectedly")
+
+        # Fallback retry when tenacity is unavailable
+        attempts = max(1, self.cfg.max_retries or 1)
+        last_exc: Optional[Exception] = None
+        for i in range(attempts):
+            try:
                 resp = await self.client.request(method, url, **kwargs)
-                # Consider retry for 5xx
                 if 500 <= resp.status_code < 600:
-                    raise httpx.HTTPStatusError("server error", request=resp.request, response=resp)
+                    self._log.warning(
+                        "server 5xx on %s %s attempt %d/%d -> %s",
+                        method,
+                        url,
+                        i + 1,
+                        attempts,
+                        resp.status_code,
+                    )
+                    last_exc = GoFlowServerError(f"server error {resp.status_code}")
+                    await asyncio.sleep(min(2**i * 0.2, 2.0))
+                    continue
+                self._raise_for_status_map(resp)
                 return resp
+            except (httpx.ConnectError, httpx.ReadTimeout) as e:
+                self._log.warning(
+                    "network error on %s %s attempt %d/%d: %s",
+                    method,
+                    url,
+                    i + 1,
+                    attempts,
+                    e,
+                )
+                last_exc = GoFlowRetryableError(str(e))
+                await asyncio.sleep(min(2**i * 0.2, 2.0))
+                continue
+        assert last_exc is not None
+        raise last_exc
 
-        # Should not reach here
-        raise RuntimeError("Retry loop exited unexpectedly")
+    def _raise_for_status_map(self, resp: httpx.Response) -> None:
+        if resp.status_code < 400:
+            return
+        code = resp.status_code
+        if code in (401, 403):
+            raise GoFlowAuthError(f"auth error {code}")
+        if code == 404:
+            raise GoFlowNotFound("not found")
+        if 400 <= code < 500:
+            raise GoFlowClientError(f"client error {code}")
+        if 500 <= code < 600:
+            raise GoFlowServerError(f"server error {code}")
+        raise GoFlowError(f"unexpected status {code}")
 
     async def get(self, path: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
         resp = await self._request("GET", path, params=params)
