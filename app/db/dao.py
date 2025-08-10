@@ -138,13 +138,11 @@ class TaskStateDAO:
                 values (:task_id, :analysis_type, :status, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
                 """
             )
-            params = [
-                {"task_id": t, "analysis_type": a, "status": s} for (t, a, s) in items
-            ]
+            params = [{"task_id": t, "analysis_type": a, "status": s} for (t, a, s) in items]
             try:
                 await session.execute(q, params)  # executemany
                 await session.commit()
-                for (t, _a, _s) in items:
+                for t, _a, _s in items:
                     _task_cache.invalidate(t)
             except IntegrityError as e:
                 await session.rollback()

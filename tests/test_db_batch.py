@@ -1,5 +1,6 @@
 import pytest
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
 
 from app.db import schema
 from app.db.connection import dispose_engine, get_engine
@@ -71,7 +72,7 @@ async def test_batch_operations_and_transaction_management(monkeypatch):
         assert int(res.scalar_one()) == 1
 
     # Rollback case
-    with pytest.raises(Exception):
+    with pytest.raises(IntegrityError):
         async with TransactionManager() as session:
             await session.execute(
                 text(
