@@ -34,6 +34,16 @@ def configure_litellm() -> None:
     # LiteLLM reads environment variables; set base URL for ollama
     os.environ.setdefault("LITELLM_BASE_URL", OLLAMA_BASE_URL)
 
+    # [OLLAMA-OPT] Apply pre-job optimization env vars
+    ollama_optimization_vars = {
+        "OLLAMA_NUM_PARALLEL": "8",
+        "OLLAMA_FLASH_ATTENTION": "1",
+        "OLLAMA_KV_CACHE_TYPE": "q8_0",
+        "OLLAMA_MAX_VRAM": "22000000000",
+        "OLLAMA_SCHED_SPREAD": "true",
+    }
+    os.environ.update(ollama_optimization_vars)
+
 
 def completion_sync(params: dict[str, Any]) -> Any:
     """Synchronous completion shim (rarely used; prefer async).
