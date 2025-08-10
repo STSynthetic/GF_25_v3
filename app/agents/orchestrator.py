@@ -89,8 +89,12 @@ class EnhancedQAOrchestrator:
         """
         default_order = [
             QAStage.STRUCTURAL if hasattr(QAStage, "STRUCTURAL") else QAStage("structural"),
-            QAStage.CONTENT_QUALITY if hasattr(QAStage, "CONTENT_QUALITY") else QAStage("content_quality"),
-            QAStage.DOMAIN_EXPERT if hasattr(QAStage, "DOMAIN_EXPERT") else QAStage("domain_expert"),
+            QAStage.CONTENT_QUALITY
+            if hasattr(QAStage, "CONTENT_QUALITY")
+            else QAStage("content_quality"),
+            QAStage.DOMAIN_EXPERT
+            if hasattr(QAStage, "DOMAIN_EXPERT")
+            else QAStage("domain_expert"),
         ]
         ordered = stages or default_order
 
@@ -105,7 +109,9 @@ class EnhancedQAOrchestrator:
                 analysis_type=request.analysis_type,
                 qa_stage=stage,
                 prompt=request.prompt,
-                context={**(request.context or {}), **shared_context} if shared_context else request.context,
+                context={**(request.context or {}), **shared_context}
+                if shared_context
+                else request.context,
             )
             res = await self._run_agent(stage, stage_req)
             results.append(res)
@@ -114,4 +120,6 @@ class EnhancedQAOrchestrator:
             shared_context[f"{str(stage)}_content"] = res.response.content
 
         agg = sum(r.response.confidence for r in results) / len(results) if results else 0.0
-        return OrchestratorResult(results=results, aggregate_confidence=agg, context=shared_context or None)
+        return OrchestratorResult(
+            results=results, aggregate_confidence=agg, context=shared_context or None
+        )

@@ -26,7 +26,9 @@ async def test_run_sequential_order_and_context_propagation():
         SeqAgent("S", 0.6),
     )
     orch.register(
-        QAStage.CONTENT_QUALITY if hasattr(QAStage, "CONTENT_QUALITY") else QAStage("content_quality"),
+        QAStage.CONTENT_QUALITY
+        if hasattr(QAStage, "CONTENT_QUALITY")
+        else QAStage("content_quality"),
         SeqAgent("C", 0.4),
     )
     orch.register(
@@ -36,9 +38,7 @@ async def test_run_sequential_order_and_context_propagation():
 
     req = AgentRequest(
         analysis_type=(
-            AnalysisType.THEMES
-            if hasattr(AnalysisType, "THEMES")
-            else AnalysisType("themes")
+            AnalysisType.THEMES if hasattr(AnalysisType, "THEMES") else AnalysisType("themes")
         ),
         qa_stage=None,
         prompt="p",
