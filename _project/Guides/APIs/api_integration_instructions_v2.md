@@ -416,7 +416,7 @@ You must integrate four GoFlow API endpoints that manage a complete workflow fro
 ## SECURITY CONSIDERATIONS
 
 **API Key Security**:
-1. Store the provided API key as an environment variable: `GOFLOW_API_KEY=REDACTED
+1. Store the provided API key as an environment variable: `GOFLOW_API_KEY=dtJ9HEs59LEt1iEDRbH6BoKglCIuBJnmAvrO5XkRym3+RLtwGWTr/U+XwUw6DKsXsQZscn4OrXWPesVjCjmXQA==`
 2. Never log API keys in plain text
 3. Use existing secure configuration management patterns
 
