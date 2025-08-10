@@ -86,7 +86,9 @@ async def test_fallback_on_primary_failure(monkeypatch, tmp_path):
     d = ImageDownloader(cfg)
 
     dest = tmp_path / "out2.jpg"
-    req = DownloadRequest(primary_url="https://primary/broken.jpg", fallback_url="https://fallback/img.jpg")
+    req = DownloadRequest(
+        primary_url="https://primary/broken.jpg", fallback_url="https://fallback/img.jpg"
+    )
     res = await d.download_to_path(req, str(dest))
 
     assert res.bytes_written == 3
@@ -113,7 +115,9 @@ async def test_both_fail_raises(monkeypatch, tmp_path):
     d = ImageDownloader(cfg)
 
     dest = tmp_path / "out3.jpg"
-    req = DownloadRequest(primary_url="https://primary/nope.jpg", fallback_url="https://fallback/nope.jpg")
+    req = DownloadRequest(
+        primary_url="https://primary/nope.jpg", fallback_url="https://fallback/nope.jpg"
+    )
 
     with pytest.raises(RuntimeError):
         await d.download_to_path(req, str(dest))

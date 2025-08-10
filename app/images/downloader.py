@@ -48,7 +48,8 @@ class ImageDownloader:
         if self.cfg.user_agent:
             headers["User-Agent"] = self.cfg.user_agent
 
-        async with httpx.AsyncClient(timeout=self.cfg.timeout_seconds, headers=headers) as client:
+        client = httpx.AsyncClient(timeout=self.cfg.timeout_seconds, headers=headers)
+        try:
             # try primary first with retries
             ok, written = await self._try_url(client, str(req.primary_url), dest_path)
             if ok:
@@ -57,11 +58,25 @@ class ImageDownloader:
             if req.fallback_url is not None:
                 ok_fb, written_fb = await self._try_url(client, str(req.fallback_url), dest_path)
                 if ok_fb:
-                    return DownloadResult(path=dest_path, bytes_written=written_fb, from_fallback=True)
+                    return DownloadResult(
+                        path=dest_path,
+                        bytes_written=written_fb,
+                        from_fallback=True,
+                    )
 
             raise RuntimeError("image download failed for both primary and fallback")
+        finally:
+            try:
+                await client.aclose()
+            except Exception:  # pragma: no cover
+                pass
 
-    async def _try_url(self, client: httpx.AsyncClient, url: str, dest_path: str) -> tuple[bool, int]:
+    async def _try_url(
+        self,
+        client: httpx.AsyncClient,
+        url: str,
+        dest_path: str,
+    ) -> tuple[bool, int]:
         # Tenacity path
         if AsyncRetrying is not None and self.cfg.max_retries > 0:
             async for attempt in AsyncRetrying(
@@ -85,10 +100,15 @@ class ImageDownloader:
                     return True, written
             except (httpx.ConnectError, httpx.ReadTimeout) as ex:  # pragma: no cover
                 self.log.warning("network error on %s attempt %d/%d: %s", url, i + 1, attempts, ex)
-            await asyncio.sleep(min(2 ** i * 0.2, 2.0))
+            await asyncio.sleep(min(2**i * 0.2, 2.0))
         return False, 0
 
-    async def _download_once(self, client: httpx.AsyncClient, url: str, dest_path: str) -> tuple[bool, int]:
+    async def _download_once(
+        self,
+        client: httpx.AsyncClient,
+        url: str,
+        dest_path: str,
+    ) -> tuple[bool, int]:
         self.log.info("downloading %s -> %s", url, dest_path)
         bytes_written = 0
         # Stream and write using thread to avoid sync I/O in event loop
