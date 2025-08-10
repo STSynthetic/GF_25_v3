@@ -76,3 +76,42 @@ class EnhancedQAOrchestrator:
         shared_context: dict[str, Any] | None = None
 
         return OrchestratorResult(results=results, aggregate_confidence=agg, context=shared_context)
+
+    async def run_sequential(
+        self,
+        request: AgentRequest,
+        stages: list[QAStage] | None = None,
+    ) -> OrchestratorResult:
+        """Execute agents in a strict sequence, propagating context.
+
+        Default order: structural -> content_quality -> domain_expert (if registered).
+        Aggregation: mean confidence across executed stages.
+        """
+        default_order = [
+            QAStage.STRUCTURAL if hasattr(QAStage, "STRUCTURAL") else QAStage("structural"),
+            QAStage.CONTENT_QUALITY if hasattr(QAStage, "CONTENT_QUALITY") else QAStage("content_quality"),
+            QAStage.DOMAIN_EXPERT if hasattr(QAStage, "DOMAIN_EXPERT") else QAStage("domain_expert"),
+        ]
+        ordered = stages or default_order
+
+        results: list[AgentRunResult] = []
+        shared_context: dict[str, Any] = {}
+
+        for stage in ordered:
+            if stage not in self._registry:
+                continue
+            # Build per-stage request with propagated context
+            stage_req = AgentRequest(
+                analysis_type=request.analysis_type,
+                qa_stage=stage,
+                prompt=request.prompt,
+                context={**(request.context or {}), **shared_context} if shared_context else request.context,
+            )
+            res = await self._run_agent(stage, stage_req)
+            results.append(res)
+
+            # Simple propagation: attach each stage's content into context for next stage
+            shared_context[f"{str(stage)}_content"] = res.response.content
+
+        agg = sum(r.response.confidence for r in results) / len(results) if results else 0.0
+        return OrchestratorResult(results=results, aggregate_confidence=agg, context=shared_context or None)
