@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import asyncio
 import json
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -32,13 +31,13 @@ class CorrectiveTriggerConfig(BaseModel):
 
 class CorrectiveTriggerResult(BaseModel):
     triggered: bool = Field(description="Whether a corrective job was enqueued")
-    reason: Optional[str] = Field(default=None, description="Reason for trigger decision")
-    payload: Optional[Dict[str, Any]] = Field(
+    reason: str | None = Field(default=None, description="Reason for trigger decision")
+    payload: dict[str, Any] | None = Field(
         default=None, description="Payload enqueued to corrective queue"
     )
 
 
-async def _enqueue(redis: Any, queue: str, payload: Dict[str, Any]) -> None:
+async def _enqueue(redis: Any, queue: str, payload: dict[str, Any]) -> None:
     data = json.dumps(payload)
     # Use RPUSH to append to a list queue; switch to XADD if streams are preferred
     await redis.rpush(queue, data)
@@ -81,9 +80,7 @@ async def trigger_corrective_if_needed(
             ],
         }
         await _enqueue(redis, cfg.queue_name, payload)
-        return CorrectiveTriggerResult(
-            triggered=True, reason="threshold_not_met", payload=payload
-        )
+        return CorrectiveTriggerResult(triggered=True, reason="threshold_not_met", payload=payload)
     finally:
         try:
             await redis.aclose()

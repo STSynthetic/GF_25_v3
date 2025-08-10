@@ -1,16 +1,14 @@
-import asyncio
-from types import SimpleNamespace
 from typing import Any
 
 import pytest
 
+from app.agents.base import AgentResponse
 from app.agents.corrective_trigger import (
     CorrectiveTriggerConfig,
     CorrectiveTriggerResult,
     trigger_corrective_if_needed,
 )
 from app.agents.orchestrator import AgentRunResult, OrchestratorResult
-from app.agents.base import AgentResponse
 from app.config_schema import QAStage
 
 
@@ -40,7 +38,9 @@ async def test_trigger_not_needed_when_threshold_met(monkeypatch):
     res = OrchestratorResult(results=[], aggregate_confidence=0.9, context=None)
 
     out: CorrectiveTriggerResult = await trigger_corrective_if_needed(
-        task_id="t1", orchestrator_result=res, config=CorrectiveTriggerConfig(aggregate_threshold=0.75)
+        task_id="t1",
+        orchestrator_result=res,
+        config=CorrectiveTriggerConfig(aggregate_threshold=0.75),
     )
 
     assert out.triggered is False
@@ -83,4 +83,4 @@ async def test_trigger_enqueues_when_below_threshold(monkeypatch):
     assert fake.calls
     qname, payload = fake.calls[0]
     assert qname == "qa:corrective:test"
-    assert "\"task_id\": \"t2\"" in payload
+    assert '"task_id": "t2"' in payload
