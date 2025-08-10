@@ -6,7 +6,13 @@ from typing import Any
 import httpx
 from pydantic import BaseModel, Field, HttpUrl
 
-from app.api.goflow_models import Job, JobStatusUpdate
+from app.api.goflow_models import (
+    Job,
+    JobStatusUpdate,
+    ReportRequest,
+    ReportResponse,
+    ResultPayload,
+)
 
 try:  # Optional retry support per [ASYNC-CORE]
     from tenacity import (  # type: ignore
@@ -108,3 +114,18 @@ class GoFlowClient:
         """Update processing status for a project (agent heartbeat/progress)."""
         path = f"/api/v1/agent/projects/{project_id}/status"
         return await self.post(path, json=update.model_dump())
+
+    # ---- Task 7.3: Result Submission and Report Generation ----
+    async def submit_analysis_result(self, payload: ResultPayload) -> Dict[str, Any]:
+        """Submit analysis result for a specific project/media/analysis."""
+        path = (
+            f"/api/v1/agent/projects/{payload.project_id}/media/"
+            f"{payload.media_id}/analysis/{payload.analysis_id}"
+        )
+        return await self.post(path, json=payload.model_dump())
+
+    async def generate_project_report(self, req: ReportRequest) -> ReportResponse:
+        """Trigger report generation for a project and return report info."""
+        path = f"/api/v1/agent/projects/{req.project_id}/reports"
+        data = await self.post(path, json=req.model_dump())
+        return ReportResponse.model_validate(data)
