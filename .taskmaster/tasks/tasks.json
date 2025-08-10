@@ -487,7 +487,7 @@
             "description": "Create intelligent image download system that attempts to fetch images from optimized_path first, then falls back to greyscale_path if the primary source fails or is unavailable",
             "dependencies": [],
             "details": "Implement async HTTP client with configurable timeout and retry logic. Create path resolution logic that prioritizes optimized_path over greyscale_path. Include error handling for network failures, HTTP errors (404, 500, etc.), and connection timeouts. Implement download progress tracking and cancellation support. Add support for common image formats (jpg, jpeg, png, webp) with proper MIME type validation during download.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test successful downloads from both optimized and greyscale paths, verify fallback mechanism when primary path fails, test timeout and retry behavior, validate MIME type detection, and confirm proper error handling for various failure scenarios"
           },
           {
@@ -498,7 +498,7 @@
               "8.1"
             ],
             "details": "Create cache directory structure with metadata files storing TTL, compression settings, and original URLs. Implement cache key generation using URL hashing. Add configurable compression using gzip or similar for storage optimization. Include cache validation logic to check TTL expiration and file integrity. Implement cache cleanup routines for expired entries and storage limit management. Add cache statistics tracking (hit/miss ratios, storage usage).",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify cache storage and retrieval functionality, test TTL expiration and cleanup, validate compression effectiveness, confirm cache key uniqueness, test concurrent cache access, and verify cache statistics accuracy"
           },
           {
@@ -684,7 +684,7 @@
     ],
     "metadata": {
       "created": "2025-08-09T12:21:40.059Z",
-      "updated": "2025-08-10T10:43:20.911Z",
+      "updated": "2025-08-10T11:53:02.452Z",
       "description": "Tasks for master context"
     }
   }
